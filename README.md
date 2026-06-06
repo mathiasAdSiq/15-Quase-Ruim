@@ -109,13 +109,13 @@ Planejamento futuro:
 
 ## Modelo da Arquitetura
 
-# Diagrama Técnico da Arquitetura
+### Diagrama Técnico da Arquitetura
 
 [Captura de tela 2026-06-06 033352.png](https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/2b7686cf50a5f5446f3fbde4ca646fa8b3c7acf5/Captura%20de%20tela%202026-06-06%20033352.png)
 
-# Fluxo Operacional
+### Fluxo Operacional
 [Captura de tela 2026-06-06 033413.png](https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/2b7686cf50a5f5446f3fbde4ca646fa8b3c7acf5/Captura%20de%20tela%202026-06-06%20033413.png)
-   # Modelo Arquitetural (Camadas)
+### Modelo Arquitetural (Camadas)
 [Captura de tela 2026-06-06 033424.png](https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/2b7686cf50a5f5446f3fbde4ca646fa8b3c7acf5/Captura%20de%20tela%202026-06-06%20033424.png)
 
 ### Componentes Principais
