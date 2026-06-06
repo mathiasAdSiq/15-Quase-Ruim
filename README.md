@@ -111,7 +111,7 @@ Planejamento futuro:
 
 # Diagrama Técnico da Arquitetura
 
-![Logo do Projeto](Captura de tela 2026-06-06 033352.png)
+![Logo do Projeto](/Captura de tela 2026-06-06 033352.png)
 
 # Fluxo Operacional
 Operador
