@@ -114,7 +114,7 @@ Planejamento futuro:
 ![Logo do Projeto](/Captura de tela 2026-06-06 033352.png)
 
 # Fluxo Operacional
-Operador
+[Operador
     │
     ▼
 Dashboard SCADA
@@ -135,31 +135,7 @@ Dashboard SCADA
     │
     └── Manutenção ───────────────► /api/manutencao_todos
    # Modelo Arquitetural (Camadas)
-┌──────────────────────────────────────────┐
-│ CAMADA 1 - APRESENTAÇÃO                  │
-│ Frontend Web (HTML/CSS/JS + SVG)         │
-└──────────────────────────────────────────┘
-                    │
-┌──────────────────────────────────────────┐
-│ CAMADA 2 - SERVIÇOS                      │
-│ Flask REST API                           │
-└──────────────────────────────────────────┘
-                    │
-┌──────────────────────────────────────────┐
-│ CAMADA 3 - CONTROLE SCADA                │
-│ Eventos • Alarmes • Regras               │
-│ Diagnóstico • Histórico                  │
-└──────────────────────────────────────────┘
-                    │
-┌──────────────────────────────────────────┐
-│ CAMADA 4 - DISPOSITIVOS                  │
-│ Setores • Energizador • Sensores         │
-└──────────────────────────────────────────┘
-                    │
-┌──────────────────────────────────────────┐
-│ CAMADA 5 - INFRAESTRUTURA                │
-│ Cerca Elétrica Rural                     │
-└──────────────────────────────────────────┘
+https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/36c9de153a27ea89dcad7049d8d7bac3006887a2/Captura%20de%20tela%202026-06-06%20033413.png)
 
 ### Componentes Principais
 
