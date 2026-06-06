@@ -114,26 +114,7 @@ Planejamento futuro:
 ![Logo do Projeto](/Captura de tela 2026-06-06 033352.png)
 
 # Fluxo Operacional
-[Operador
-    │
-    ▼
-Dashboard SCADA
-    │
-    ├── Consultar Sensores ─────────────► Flask API
-    │                                     │
-    │                                     ▼
-    │                               Núcleo SCADA
-    │                                     │
-    │                                     ▼
-    │                             Cerca Elétrica
-    │
-    ├── Ajustar Tensão ───────────► /api/tensao
-    │
-    ├── Ligar/Desligar ───────────► /api/controle
-    │
-    ├── Diagnóstico ──────────────► /api/diagnostico
-    │
-    └── Manutenção ───────────────► /api/manutencao_todos
+https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/f8a33509761031183f3ebf285c6962ea10ebe641/Captura%20de%20tela%202026-06-06%20033413.png
    # Modelo Arquitetural (Camadas)
 https://github.com/mathiasAdSiq/15-Quase-Ruim/blob/36c9de153a27ea89dcad7049d8d7bac3006887a2/Captura%20de%20tela%202026-06-06%20033413.png)
 
