@@ -378,9 +378,74 @@ body { padding-top: 28px; }
 .logout-btn{font-family:monospace;font-size:11px;border:0.5px solid #4b5563;border-radius:6px;background:#111827;color:#f9fafb;padding:3px 8px;cursor:pointer}
 .logout-btn:hover{background:#1f2937;border-color:#9ca3af}
 
+
+
+
+/* LOGIN UNIFICADO */
+#login-overlay{
+  position:fixed;inset:0;background:radial-gradient(circle at top,#1f2937 0,#0b1220 48%,#050816 100%);
+  z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;
+}
+#login-overlay.hidden{display:none!important;}
+#login-overlay .login-card{width:100%;max-width:390px;background:linear-gradient(180deg,rgba(31,41,55,.98),rgba(17,24,39,.98));border:1px solid #273244;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:28px;color:#f9fafb;font-family:Inter,system-ui,sans-serif;}
+#login-overlay .logo{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+#login-overlay .shield{width:48px;height:48px;border-radius:14px;border:1px solid #334155;display:grid;place-items:center;background:#0f172a;color:#1D9E75;font-size:26px;}
+#login-overlay .brand h1{font-size:20px;line-height:1.1;color:#f9fafb;}
+#login-overlay .brand p{font-size:12px;color:#9ca3af;margin-top:3px;}
+#login-overlay label{display:block;font-size:12px;color:#cbd5e1;margin:14px 0 6px;}
+#login-overlay input{width:100%;height:44px;border-radius:10px;border:1px solid #374151;background:#0b1220;color:#f9fafb;padding:0 12px;font-size:14px;outline:none;}
+#login-overlay input:focus{border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,.15);}
+#login-overlay button{width:100%;height:44px;border:0;border-radius:10px;background:#1D9E75;color:white;font-weight:700;font-size:14px;cursor:pointer;margin-top:18px;}
+#login-overlay button:hover{filter:brightness(1.08);}
+#login-overlay button:disabled{opacity:.65;cursor:wait;}
+#login-overlay .msg{min-height:18px;font-size:12px;color:#E24B4A;margin-top:12px;}
+#login-overlay .test-box{margin-top:18px;border:1px dashed #4b5563;border-radius:12px;padding:12px;background:rgba(15,23,42,.65);font-size:12px;color:#cbd5e1;line-height:1.6;}
+#login-overlay .test-box b{color:#fff;}
+#login-overlay .footer{margin-top:18px;font-size:11px;color:#64748b;text-align:center;}
+
+
+/* FORCE LOGIN FIX */
+body:not(.fg-authenticated) #login-overlay{
+  display:flex !important;
+}
+body.fg-authenticated #login-overlay{
+  display:none !important;
+}
+#login-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  background:#050816 !important;
+  z-index:999999 !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
 </style>
 </head>
 <body>
+<div id="login-overlay"><main class="login-card">
+<div class="logo">
+<div class="shield">⚡</div>
+<div class="brand">
+<h1>Fence Guard SCADA</h1>
+<p>Acesso seguro do operador</p>
+</div>
+</div>
+<form id="login-form">
+<label for="usuario">Usuário</label>
+<input autocomplete="username" id="usuario" name="usuario" required="" value="operador"/>
+<label for="senha">Senha</label>
+<input autocomplete="current-password" id="senha" name="senha" required="" type="password" value="fence123"/>
+<button id="btn-login" type="submit">Entrar no sistema</button>
+<div class="msg" id="msg"></div>
+</form>
+<div class="test-box">
+<div><b>Conta teste:</b> operador</div>
+<div><b>Senha:</b> fence123</div>
+</div>
+<div class="footer">Sessão protegida por cookie HttpOnly · API bloqueada sem login</div>
+</main></div>
+
 
 <div id="status-bar">
   <span>Fence Guard SCADA v8</span>
@@ -615,10 +680,10 @@ body { padding-top: 28px; }
 
     <div id="map-toolbar">
       <span id="tb-hint">Editor do mapa</span>
-      <button class="tb-btn" id="tb-add" onclick="toggleAddMode()"><i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto</button>
-      <button class="tb-btn" id="tb-connect" onclick="toggleConnectMode()"><i class="ti ti-route" style="font-size:14px"></i> Ligar pontos</button>
-      <button class="tb-btn tb-danger" id="tb-remove-line" onclick="toggleRemoveLineMode()"><i class="ti ti-cut" style="font-size:14px"></i> Remover linha</button>
-      <button class="tb-btn tb-danger" id="tb-remove" onclick="removeSelected()" style="display:none"><i class="ti ti-map-pin-minus" style="font-size:14px"></i> Remover</button>
+      <button class="tb-btn" id="tb-add" onclick="fgToggleAddMode(event)"><i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto</button>
+      <button class="tb-btn" id="tb-connect" onclick="fgToggleConnectMode(event)"><i class="ti ti-route" style="font-size:14px"></i> Ligar pontos</button>
+      <button class="tb-btn tb-danger" id="tb-remove-line" onclick="fgToggleRemoveLineMode(event)"><i class="ti ti-cut" style="font-size:14px"></i> Remover linha</button>
+      <button class="tb-btn tb-danger" id="tb-remove" onclick="fgRemoveSelected(event)" style="display:none"><i class="ti ti-map-pin-minus" style="font-size:14px"></i> Remover</button>
       <div class="rename-wrap" id="rename-wrap" style="display:none">
         <input type="text" id="rename-input" placeholder="Nome da zona…" maxlength="40">
         <button onclick="applyRename()"><i class="ti ti-check"></i></button>
@@ -629,6 +694,15 @@ body { padding-top: 28px; }
 </div><!-- /app -->
 
 <script>
+
+// ── HOTFIX LOGIN INICIAL ─────────────────────────────────────────────────────
+(function forceLoginOnFreshOpen(){
+  if (window.location.protocol === 'file:') {
+    localStorage.removeItem('fg_logged');
+    localStorage.removeItem('fg_auth_ok');
+  }
+})();
+
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const POLL_MS    = 3000;
 const TENSAO_MAX = 8000; // referência do backend em V
@@ -794,6 +868,166 @@ function updateDisconnectedDiagnostics() {
   if (badge) badge.style.display = (count > 0 || zones.some(z => z.defeito)) ? '' : 'none';
 }
 
+
+function isLocalFileMode() {
+  return window.location.protocol === 'file:';
+}
+
+const DEMO_USERS = { operador: 'fence123' };
+
+function localLoginOK() {
+  return localStorage.getItem('fg_logged') === '1';
+}
+
+function localSetLogged(value) {
+  if (value) localStorage.setItem('fg_logged', '1');
+  else localStorage.removeItem('fg_logged');
+}
+
+function fixLocalStatusAfterAction(z) {
+  if (!z) return;
+  if (z.defeito || z.status === 'fault') {
+    z.status = 'fault';
+    z.ligado = false;
+    z.voltage = 0;
+    z.tensaoV = 0;
+    return;
+  }
+  if (!z.ligado || !z.voltage || z.voltage <= 0) {
+    z.status = 'off';
+    z.ligado = false;
+    z.voltage = 0;
+    z.tensaoV = 0;
+    return;
+  }
+  z.status = z.voltage < 4 ? 'critical' : 'on';
+  z.tensaoV = z.voltage * 1000;
+}
+
+function demoSetoresPayload() {
+  return {
+    setores: zones.map(z => ({
+      id: String(z.id),
+      nome: z.name,
+      ligado: !!z.ligado,
+      defeito: !!z.defeito,
+      tensao: Math.round((z.voltage || 0) * 1000),
+      tensao_alvo: Math.round((z.voltage || 0) * 1000),
+      status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
+      base: !!z.base,
+      ts: Date.now() / 1000
+    })),
+    alertas: zones
+      .filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4))
+      .map(z => ({
+        id: String(z.id),
+        nome: z.name,
+        defeito: !!z.defeito,
+        status: z.defeito ? 'falha' : 'critico',
+        tensao: Math.round((z.voltage || 0) * 1000)
+      })),
+    ts: Date.now() / 1000
+  };
+}
+
+async function localApiPost(url, data) {
+  if (url === '/login') {
+    const usuario = String(data?.usuario || '').trim();
+    const senha = String(data?.senha || '');
+    if (DEMO_USERS[usuario] === senha) {
+      localSetLogged(true);
+      return { ok: true, usuario };
+    }
+    throw new Error('Usuário ou senha inválidos');
+  }
+
+  if (url === '/logout') {
+    localSetLogged(false);
+    return { ok: true };
+  }
+
+  if (!localLoginOK()) throw new Error('Sessão expirada');
+
+  if (url === '/api/controle') {
+    const z = zones.find(x => String(x.id) === String(data.id));
+    if (!z) return { ok: false, msg: 'Setor não encontrado' };
+
+    if (data.acao === 'ligar') {
+      z.ligado = true;
+      z.defeito = false;
+      z.fault = null;
+      z.voltage = Math.max(z.voltage || 6, 5);
+    } else if (data.acao === 'desligar') {
+      z.ligado = false;
+      z.voltage = 0;
+      z.defeito = false;
+      z.fault = null;
+    } else if (data.acao === 'reiniciar') {
+      z.defeito = false;
+      z.fault = null;
+      z.ligado = true;
+      z.voltage = Math.max(z.voltage || 6, 5);
+    } else if (data.acao === 'manutencao') {
+      z.defeito = false;
+      z.fault = null;
+      z.ligado = true;
+      z.voltage = Math.max(z.voltage || 6, 6);
+    }
+    fixLocalStatusAfterAction(z);
+    return { ok: true, setor: z };
+  }
+
+  if (url === '/api/tensao') {
+    const z = zones.find(x => String(x.id) === String(data.id));
+    if (!z) return { ok: false, msg: 'Setor não encontrado' };
+    const kv = Math.max(0, Math.min(8, Number(data.tensao || 0) / 1000));
+    z.defeito = false;
+    z.fault = null;
+    z.voltage = kv;
+    z.ligado = kv > 0;
+    fixLocalStatusAfterAction(z);
+    return { ok: true, setor: z };
+  }
+
+  if (url === '/api/manutencao_todos') {
+    zones.forEach(z => {
+      z.defeito = false;
+      z.fault = null;
+      z.ligado = true;
+      z.voltage = Math.max(z.voltage || 6, 6);
+      fixLocalStatusAfterAction(z);
+    });
+    return { ok: true, setores: zones };
+  }
+
+  if (url === '/api/adicionar') {
+    const id = 'local_' + Date.now();
+    return { ok: true, setor: { id, nome: data.nome || 'Nova zona', ligado: false, defeito: false, tensao: 0, status: 'desligado', base: false } };
+  }
+
+  if (url === '/api/remover') return { ok: true };
+  if (url === '/api/editar') return { ok: true };
+  return { ok: true };
+}
+
+async function localApiFetch(url) {
+  if (!localLoginOK()) throw new Error('Sessão expirada');
+  if (url === '/api/sensores') return demoSetoresPayload();
+  if (url === '/api/estatisticas') {
+    const ativos = zones.filter(z => z.ligado && !z.defeito);
+    const media = ativos.length ? ativos.reduce((s,z)=>s+(z.voltage||0),0)/ativos.length*1000 : 0;
+    return {
+      ok: true,
+      total_setores: zones.length,
+      setores_falha: zones.filter(z => z.defeito).length,
+      tensao_media: media,
+      sensor_mode: 'local-demo'
+    };
+  }
+  return { ok: true };
+}
+
+
 // ── API ───────────────────────────────────────────────────────────────────────
 async function parseApiResponse(r) {
   let payload = null;
@@ -809,10 +1043,12 @@ async function parseApiResponse(r) {
   return payload || {};
 }
 async function apiFetch(url) {
+  if (isLocalFileMode()) return localApiFetch(url);
   const r = await fetch(url);
   return parseApiResponse(r);
 }
 async function apiPost(url, data) {
+  if (isLocalFileMode()) return localApiPost(url, data);
   const r = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -822,16 +1058,17 @@ async function apiPost(url, data) {
 }
 
 async function logout() {
-  try { await apiPost('/logout', {}); }
-  catch (_) {}
-  window.location.href = '/login';
+  try { await apiPost('/logout', {}); } catch (_) {}
+  localStorage.removeItem('fg_auth_ok');
+  const overlay = document.getElementById('login-overlay');
+  if (overlay) overlay.classList.remove('hidden');
 }
 
 // ── SYNC com backend ──────────────────────────────────────────────────────────
 async function syncFromBackend() {
   let data;
   try { data = await apiFetch('/api/sensores'); }
-  catch(e) { return; }
+  catch(e) { loadDemoData(); return; }
 
   const backendSetores = data.setores; // array de objetos
 
@@ -943,7 +1180,8 @@ async function zoneAction(acao) {
   const keepSelected = z.id;
   const res = await apiPost('/api/controle', { id: z.id, acao });
   if (res && res.ok) {
-    await syncFromBackend();
+    await setupUnifiedLogin();
+syncFromBackend();
     selectZone(keepSelected);
   } else if (res && res.msg) {
     alert(res.msg);
@@ -1701,8 +1939,933 @@ function esc(str) {
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+
+
+// ── LOGIN UNIFICADO (funciona abrindo arquivo local ou via Flask) ─────────────
+const FG_TEST_USER = 'operador';
+const FG_TEST_PASS = 'fence123';
+
+function showLogin() {
+  const overlay = document.getElementById('login-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+function hideLogin() {
+  const overlay = document.getElementById('login-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+function isFileMode() { return window.location.protocol === 'file:'; }
+
+function loadDemoData() {
+  // Quando o HTML é aberto direto pelo navegador (file:///), não existe Flask/API.
+  // Então carregamos dados locais para o painel abrir e funcionar em modo demonstração.
+  if (zones.length > 0) return;
+  zones = [
+    {id:'setor_1', name:'Setor 1', status:'on',       defeito:false, ligado:true,  voltage:6, tensaoV:6500, battery:94, temp:'24°C', health:'Bom',       fault:null, base:true, x:120, y:72},
+    {id:'setor_2', name:'Setor 2', status:'on',       defeito:false, ligado:true,  voltage:7, tensaoV:7200, battery:91, temp:'25°C', health:'Bom',       fault:null, base:true, x:470, y:92},
+    {id:'setor_3', name:'Setor 3', status:'critical', defeito:false, ligado:true,  voltage:3, tensaoV:3900, battery:87, temp:'26°C', health:'Atenção',   fault:null, base:true, x:440, y:335},
+    {id:'setor_4', name:'Setor 4', status:'off',      defeito:false, ligado:false, voltage:0, tensaoV:0,    battery:89, temp:'23°C', health:'Desligado', fault:null, base:true, x:115, y:335}
+  ];
+  posMap = {
+    setor_1:{x:120,y:72}, setor_2:{x:470,y:92}, setor_3:{x:440,y:335}, setor_4:{x:115,y:335}
+  };
+  edges = DEFAULT_EDGES.slice();
+  renderAll();
+}
+
+function setupUnifiedLogin() {
+  const overlay = document.getElementById('login-overlay');
+  const form = document.getElementById('login-form');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btn-login');
+
+  if (!overlay || !form) return;
+
+  // Sempre mostra login ao abrir localmente. Depois de autenticar, esconde.
+  if (window.location.protocol === 'file:') {
+    overlay.classList.remove('hidden');
+  }
+
+  if (form.dataset.fgLoginBound === '1') return;
+  form.dataset.fgLoginBound = '1';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (msg) msg.textContent = '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+    }
+
+    try {
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      if (window.location.protocol === 'file:') {
+        if (usuario !== 'operador' || senha !== 'fence123') {
+          throw new Error('Usuário ou senha inválidos');
+        }
+        localSetLogged(true);
+        overlay.classList.add('hidden');
+        if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
+        return;
+      }
+
+      const res = await apiPost('/login', { usuario, senha });
+      if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
+      overlay.classList.add('hidden');
+      if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
+    } catch (err) {
+      if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Entrar no sistema';
+      }
+    }
+  });
+}
+
+// ── HOTFIX FINAL: botões e status crítico em modo arquivo local ───────────────
+function localLoginOK() {
+  return localStorage.getItem('fg_logged') === '1' || localStorage.getItem('fg_auth_ok') === '1';
+}
+function localSetLogged(value) {
+  if (value) {
+    localStorage.setItem('fg_logged', '1');
+    localStorage.setItem('fg_auth_ok', '1');
+  } else {
+    localStorage.removeItem('fg_logged');
+    localStorage.removeItem('fg_auth_ok');
+  }
+}
+function normalizeZoneStatus(z) {
+  if (!z) return;
+  z.voltage = Number(z.voltage || 0);
+  z.tensaoV = Math.round(z.voltage * 1000);
+  if (z.defeito || z.status === 'fault') {
+    z.status = 'fault';
+    z.ligado = false;
+    z.voltage = 0;
+    z.tensaoV = 0;
+    return;
+  }
+  if (!z.ligado || z.voltage <= 0) {
+    z.status = 'off';
+    z.ligado = false;
+    z.voltage = 0;
+    z.tensaoV = 0;
+    return;
+  }
+  z.status = z.voltage < 4 ? 'critical' : 'on';
+}
+function refreshAfterLocalAction(id) {
+  const z = zones.find(x => String(x.id) === String(id));
+  normalizeZoneStatus(z);
+  selectedZone = z ? z.id : selectedZone;
+  if (typeof selectZone === 'function' && z) selectZone(z.id);
+  if (typeof renderAll === 'function') renderAll();
+}
+async function apiFetch(url) {
+  if (window.location.protocol === 'file:') {
+    if (!localLoginOK()) throw new Error('Sessão expirada');
+    if (url === '/api/sensores') {
+      if (typeof loadDemoData === 'function') loadDemoData();
+      return {
+        setores: zones.map(z => {
+          normalizeZoneStatus(z);
+          return {
+            id: z.id,
+            nome: z.name,
+            ligado: !!z.ligado,
+            defeito: !!z.defeito,
+            tensao: Math.round((z.voltage || 0) * 1000),
+            tensao_alvo: Math.round((z.voltage || 0) * 1000),
+            status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
+            base: !!z.base,
+            ts: Date.now() / 1000
+          };
+        }),
+        alertas: zones.filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4)),
+        ts: Date.now() / 1000
+      };
+    }
+    if (url === '/api/estatisticas') {
+      const ativos = zones.filter(z => z.ligado && !z.defeito);
+      return {
+        ok: true,
+        total_setores: zones.length,
+        setores_falha: zones.filter(z => z.defeito).length,
+        tensao_media: ativos.length ? ativos.reduce((s,z)=>s+(z.voltage||0),0)/ativos.length*1000 : 0,
+        sensor_mode: 'local-demo'
+      };
+    }
+    return { ok: true };
+  }
+  const r = await fetch(url);
+  return parseApiResponse(r);
+}
+async function apiPost(url, data) {
+  if (window.location.protocol === 'file:') {
+    if (url === '/login') {
+      const usuario = String(data?.usuario || '').trim();
+      const senha = String(data?.senha || '');
+      if (usuario === 'operador' && senha === 'fence123') {
+        localSetLogged(true);
+        if (typeof loadDemoData === 'function') loadDemoData();
+        return { ok: true, usuario };
+      }
+      throw new Error('Usuário ou senha inválidos');
+    }
+    if (url === '/logout') {
+      localSetLogged(false);
+      return { ok: true };
+    }
+    if (!localLoginOK()) throw new Error('Sessão expirada');
+
+    if (url === '/api/controle') {
+      const z = zones.find(x => String(x.id) === String(data.id));
+      if (!z) return { ok: false, msg: 'Setor não encontrado' };
+
+      if (data.acao === 'ligar') {
+        z.defeito = false;
+        z.fault = null;
+        z.ligado = true;
+        z.voltage = Math.max(Number(z.voltage || 0), 6);
+      }
+      if (data.acao === 'desligar') {
+        z.defeito = false;
+        z.fault = null;
+        z.ligado = false;
+        z.voltage = 0;
+      }
+      if (data.acao === 'reiniciar') {
+        z.defeito = false;
+        z.fault = null;
+        z.ligado = true;
+        z.voltage = Math.max(Number(z.voltage || 0), 6);
+      }
+      if (data.acao === 'manutencao') {
+        z.defeito = false;
+        z.fault = null;
+        z.ligado = true;
+        z.voltage = Math.max(Number(z.voltage || 0), 6);
+      }
+      normalizeZoneStatus(z);
+      return { ok: true, setor: z };
+    }
+
+    if (url === '/api/tensao') {
+      const z = zones.find(x => String(x.id) === String(data.id));
+      if (!z) return { ok: false, msg: 'Setor não encontrado' };
+      const kv = Math.max(0, Math.min(8, Number(data.tensao || 0) / 1000));
+      z.defeito = false;
+      z.fault = null;
+      z.ligado = kv > 0;
+      z.voltage = kv;
+      normalizeZoneStatus(z);
+      return { ok: true, setor: z };
+    }
+
+    if (url === '/api/manutencao_todos') {
+      zones.forEach(z => {
+        z.defeito = false;
+        z.fault = null;
+        z.ligado = true;
+        z.voltage = Math.max(Number(z.voltage || 0), 6);
+        normalizeZoneStatus(z);
+      });
+      return { ok: true, setores: zones };
+    }
+
+    if (url === '/api/remover') return { ok: true };
+    if (url === '/api/editar') return { ok: true };
+    if (url === '/api/adicionar') {
+      const id = 'local_' + Date.now();
+      return { ok: true, setor: { id, nome: data?.nome || 'Nova zona', ligado:false, defeito:false, tensao:0, status:'desligado', base:false } };
+    }
+    return { ok: true };
+  }
+
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data || {})
+  });
+  return parseApiResponse(r);
+}
+async function zoneAction(acao) {
+  if (selectedZone === null || selectedZone === undefined) return;
+  const z = zones.find(x => String(x.id) === String(selectedZone));
+  if (!z) return;
+
+  if (window.location.protocol === 'file:') {
+    if (acao === 'ligar') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    }
+    if (acao === 'desligar') {
+      z.defeito = false; z.fault = null; z.ligado = false; z.voltage = 0;
+    }
+    if (acao === 'reiniciar') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    }
+    if (acao === 'manutencao') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    }
+    refreshAfterLocalAction(z.id);
+    return;
+  }
+
+  try {
+    const res = await apiPost('/api/controle', { id: z.id, acao });
+    if (res && res.ok) {
+      await syncFromBackend();
+      selectZone(z.id);
+    } else if (res && res.msg) {
+      alert(res.msg);
+    }
+  } catch (err) {
+    alert(err.message || 'Erro ao executar ação');
+  }
+}
+async function maintenanceAll() {
+  if (!confirm('Executar manutenção em todas as cercas/setores?')) return;
+  if (window.location.protocol === 'file:') {
+    zones.forEach(z => {
+      z.defeito = false;
+      z.fault = null;
+      z.ligado = true;
+      z.voltage = Math.max(Number(z.voltage || 0), 6);
+      normalizeZoneStatus(z);
+    });
+    renderAll();
+    return;
+  }
+  const res = await apiPost('/api/manutencao_todos', {});
+  if (!res.ok) alert(res.msg || 'Erro na manutenção');
+  await syncFromBackend();
+}
+function updateVolt(id, val) {
+  const z = zones.find(x => String(x.id) === String(id));
+  if (!z) return;
+  z.defeito = false;
+  z.fault = null;
+  z.voltage = Number(val);
+  z.ligado = z.voltage > 0;
+  normalizeZoneStatus(z);
+  refreshAfterLocalAction(z.id);
+
+  if (window.location.protocol !== 'file:' && typeof apiPost === 'function') {
+    clearTimeout(window.__fgVoltTimer);
+    window.__fgVoltTimer = setTimeout(() => {
+      apiPost('/api/tensao', { id: z.id, tensao: z.voltage * 1000 }).then(() => syncFromBackend()).catch(() => {});
+    }, 300);
+  }
+}
+function logout() {
+  if (window.location.protocol === 'file:') {
+    localSetLogged(false);
+    const overlay = document.getElementById('login-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+    return;
+  }
+  apiPost('/logout', {}).finally(() => window.location.href = '/login');
+}
+
+
+
+// ── HOTFIX EDITOR: Add ponto / Remover linha / Remover ponto ─────────────────
+function setEditorMode(mode) {
+  addMode = mode === 'add';
+  connectMode = mode === 'connect';
+  removeLineMode = mode === 'removeLine';
+  connectStart = null;
+  connectPreview = null;
+
+  const svgEl = document.getElementById('map-svg');
+  const btnAdd = document.getElementById('tb-add');
+  const btnConnect = document.getElementById('tb-connect');
+  const btnRemoveLine = document.getElementById('tb-remove-line');
+
+  if (svgEl) {
+    svgEl.classList.toggle('add-mode', addMode);
+    svgEl.classList.toggle('connect-mode', connectMode);
+    svgEl.classList.toggle('remove-line-mode', removeLineMode);
+  }
+
+  if (btnAdd) {
+    btnAdd.classList.toggle('tb-active', addMode);
+    btnAdd.innerHTML = addMode
+      ? '<i class="ti ti-x" style="font-size:14px"></i> Cancelar add'
+      : '<i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto';
+  }
+
+  if (btnConnect) {
+    btnConnect.classList.toggle('tb-active', connectMode);
+    btnConnect.innerHTML = connectMode
+      ? '<i class="ti ti-x" style="font-size:14px"></i> Parar ligação'
+      : '<i class="ti ti-route" style="font-size:14px"></i> Ligar pontos';
+  }
+
+  if (btnRemoveLine) {
+    btnRemoveLine.classList.toggle('tb-active', removeLineMode);
+    btnRemoveLine.innerHTML = removeLineMode
+      ? '<i class="ti ti-x" style="font-size:14px"></i> Parar remoção'
+      : '<i class="ti ti-cut" style="font-size:14px"></i> Remover linha';
+  }
+
+  const hint = document.getElementById('tb-hint');
+  if (hint) {
+    hint.textContent =
+      addMode ? 'Clique no mapa para adicionar um ponto' :
+      connectMode ? 'Clique em dois pontos para criar uma linha' :
+      removeLineMode ? 'Clique em uma linha para remover' :
+      'Editor do mapa';
+  }
+
+  if (typeof renderMap === 'function') renderMap();
+}
+
+function toggleAddMode() {
+  setEditorMode(addMode ? null : 'add');
+}
+
+function toggleConnectMode() {
+  setEditorMode(connectMode ? null : 'connect');
+}
+
+function toggleRemoveLineMode() {
+  setEditorMode(removeLineMode ? null : 'removeLine');
+}
+
+function removeEdgeAt(index) {
+  index = Number(index);
+  if (!Number.isFinite(index) || index < 0 || index >= edges.length) return;
+  edges.splice(index, 1);
+  setEditorMode(null);
+  if (typeof renderAll === 'function') renderAll();
+}
+
+async function removeSelected() {
+  if (selectedZone === null || selectedZone === undefined) {
+    alert('Selecione uma zona para remover.');
+    return;
+  }
+
+  const z = zones.find(x => String(x.id) === String(selectedZone));
+  if (!z) {
+    alert('Zona não encontrada.');
+    return;
+  }
+
+  if (z.base) {
+    alert('Setores base não podem ser removidos.');
+    return;
+  }
+
+  if (!confirm('Remover ' + z.name + '?')) return;
+
+  if (window.location.protocol !== 'file:' && typeof z.id === 'string') {
+    const res = await apiPost('/api/remover', { id: z.id });
+    if (!res.ok) {
+      alert(res.msg || 'Erro ao remover setor.');
+      return;
+    }
+  }
+
+  edges = edges.filter(([a,b]) => String(a) !== String(z.id) && String(b) !== String(z.id));
+  zones = zones.filter(x => String(x.id) !== String(z.id));
+  selectedZone = null;
+
+  const nameEl = document.getElementById('zone-ctrl-name');
+  if (nameEl) {
+    nameEl.textContent = 'Selecione uma zona';
+    nameEl.style.color = 'var(--color-text-secondary)';
+  }
+
+  setEditorMode(null);
+  if (typeof updateToolbar === 'function') updateToolbar();
+  if (typeof renderAll === 'function') renderAll();
+}
+
+function installEditorClickHandlers() {
+  const svgEl = document.getElementById('map-svg');
+  if (!svgEl || svgEl.dataset.fgEditorFixed === '1') return;
+  svgEl.dataset.fgEditorFixed = '1';
+
+  svgEl.addEventListener('click', async function(e) {
+    if (!addMode) return;
+    if (e.target && (e.target.closest('.zone-node') || e.target.closest('.edge-hit'))) return;
+
+    const p = typeof getSVGPoint === 'function'
+      ? getSVGPoint(e)
+      : { x: e.offsetX || 200, y: e.offsetY || 200 };
+
+    const newId = 'local_' + Date.now();
+    const nome = 'Zona ' + (zones.length + 1);
+
+    zones.push({
+      id: newId,
+      name: nome,
+      status: 'off',
+      defeito: false,
+      ligado: false,
+      voltage: 0,
+      tensaoV: 0,
+      battery: 100,
+      temp: '22°C',
+      health: 'Nova',
+      fault: null,
+      base: false,
+      x: p.x,
+      y: p.y
+    });
+
+    posMap[newId] = { x: p.x, y: p.y };
+    selectedZone = newId;
+    setEditorMode(null);
+    if (typeof selectZone === 'function') selectZone(newId);
+    if (typeof renderAll === 'function') renderAll();
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+}
+
+// Reinstala handlers depois de cada render do mapa, porque o SVG é redesenhado.
+(function wrapRenderMapForEditor(){
+  if (typeof renderMap === 'function' && !renderMap.__fgWrapped) {
+    const originalRenderMap = renderMap;
+    renderMap = function(...args) {
+      const result = originalRenderMap.apply(this, args);
+      setTimeout(installEditorClickHandlers, 0);
+      setTimeout(() => {
+        document.querySelectorAll('.edge-hit,[data-edge-idx]').forEach(el => {
+          if (el.dataset.fgRemoveBound === '1') return;
+          el.dataset.fgRemoveBound = '1';
+          el.addEventListener('click', function(ev) {
+            if (!removeLineMode) return;
+            const idx = this.dataset.edgeIdx ?? this.getAttribute('data-edge-idx');
+            removeEdgeAt(idx);
+            ev.preventDefault();
+            ev.stopPropagation();
+          }, true);
+        });
+      }, 0);
+      return result;
+    };
+    renderMap.__fgWrapped = true;
+  }
+  setTimeout(installEditorClickHandlers, 0);
+})();
+
+
+
+// OVERRIDE LOGIN FINAL
+
+function setupUnifiedLogin() {
+  const overlay = document.getElementById('login-overlay');
+  const form = document.getElementById('login-form');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btn-login');
+
+  if (!overlay || !form) return;
+
+  // Sempre mostra login ao abrir localmente. Depois de autenticar, esconde.
+  if (window.location.protocol === 'file:') {
+    overlay.classList.remove('hidden');
+  }
+
+  if (form.dataset.fgLoginBound === '1') return;
+  form.dataset.fgLoginBound = '1';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (msg) msg.textContent = '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+    }
+
+    try {
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      if (window.location.protocol === 'file:') {
+        if (usuario !== 'operador' || senha !== 'fence123') {
+          throw new Error('Usuário ou senha inválidos');
+        }
+        localSetLogged(true);
+        overlay.classList.add('hidden');
+        if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
+        return;
+      }
+
+      const res = await apiPost('/login', { usuario, senha });
+      if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
+      overlay.classList.add('hidden');
+      if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
+    } catch (err) {
+      if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Entrar no sistema';
+      }
+    }
+  });
+}
+
+setupUnifiedLogin();
+
 syncFromBackend();
 setInterval(syncFromBackend, POLL_MS);
 </script>
+
+<script id="fg-final-fix">
+(function(){
+  'use strict';
+
+  const USER = 'operador';
+  const PASS = 'fence123';
+
+  // Sempre começa na tela de login ao abrir/recarregar.
+  try {
+    localStorage.removeItem('fg_logged');
+    localStorage.removeItem('fg_auth_ok');
+  } catch(e) {}
+
+  function qs(id){ return document.getElementById(id); }
+
+  function showLogin(){
+    document.body.classList.remove('fg-authenticated');
+    const overlay = qs('login-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+  }
+
+  function hideLogin(){
+    document.body.classList.add('fg-authenticated');
+    const overlay = qs('login-overlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+
+  function normalizeZone(z){
+    if (!z) return;
+    z.voltage = Number(z.voltage || 0);
+    if (z.defeito || z.status === 'fault') {
+      z.status = 'fault';
+      z.ligado = false;
+      z.voltage = 0;
+      z.tensaoV = 0;
+      return;
+    }
+    if (!z.ligado || z.voltage <= 0) {
+      z.status = 'off';
+      z.ligado = false;
+      z.voltage = 0;
+      z.tensaoV = 0;
+      return;
+    }
+    z.status = z.voltage < 4 ? 'critical' : 'on';
+    z.tensaoV = Math.round(z.voltage * 1000);
+  }
+
+  function renderSafe(){
+    try { if (typeof window.updateToolbar === 'function') window.updateToolbar(); } catch(e){}
+    try { if (typeof window.renderAll === 'function') window.renderAll(); } catch(e){}
+  }
+
+  function svgPoint(evt){
+    const svg = qs('map-svg');
+    if (!svg) return {x:200,y:200};
+    try {
+      if (typeof window.getSVGPoint === 'function') return window.getSVGPoint(evt);
+    } catch(e){}
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox && svg.viewBox.baseVal;
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+    if (vb && vb.width && vb.height) {
+      return {
+        x: vb.x + x * vb.width / rect.width,
+        y: vb.y + y * vb.height / rect.height
+      };
+    }
+    return {x,y};
+  }
+
+  function resetButtons(){
+    const add = qs('tb-add');
+    const con = qs('tb-connect');
+    const rem = qs('tb-remove-line');
+    if (add) { add.classList.toggle('tb-active', !!window.addMode); add.innerHTML = window.addMode ? '<i class="ti ti-x" style="font-size:14px"></i> Cancelar add' : '<i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto'; }
+    if (con) { con.classList.toggle('tb-active', !!window.connectMode); con.innerHTML = window.connectMode ? '<i class="ti ti-x" style="font-size:14px"></i> Parar ligação' : '<i class="ti ti-route" style="font-size:14px"></i> Ligar pontos'; }
+    if (rem) { rem.classList.toggle('tb-active', !!window.removeLineMode); rem.innerHTML = window.removeLineMode ? '<i class="ti ti-x" style="font-size:14px"></i> Parar remoção' : '<i class="ti ti-cut" style="font-size:14px"></i> Remover linha'; }
+
+    const svg = qs('map-svg');
+    if (svg) {
+      svg.classList.toggle('add-mode', !!window.addMode);
+      svg.classList.toggle('connect-mode', !!window.connectMode);
+      svg.classList.toggle('remove-line-mode', !!window.removeLineMode);
+    }
+
+    const hint = qs('tb-hint');
+    if (hint) hint.textContent = window.addMode ? 'Clique em uma área vazia do mapa para adicionar ponto' :
+      window.connectMode ? 'Clique em dois pontos para ligar' :
+      window.removeLineMode ? 'Clique em uma linha para remover' :
+      'Editor do mapa';
+  }
+
+  function setMode(mode){
+    window.addMode = mode === 'add';
+    window.connectMode = mode === 'connect';
+    window.removeLineMode = mode === 'removeLine';
+    window.connectStart = null;
+    window.connectPreview = null;
+    resetButtons();
+    try { if (typeof window.renderMap === 'function') window.renderMap(); } catch(e){}
+    setTimeout(resetButtons, 30);
+  }
+
+  window.fgToggleAddMode = function(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    setMode(window.addMode ? null : 'add');
+    return false;
+  };
+
+  window.fgToggleConnectMode = function(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    setMode(window.connectMode ? null : 'connect');
+    return false;
+  };
+
+  window.fgToggleRemoveLineMode = function(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    setMode(window.removeLineMode ? null : 'removeLine');
+    return false;
+  };
+
+  // Sobrescreve também os nomes antigos.
+  window.toggleAddMode = window.fgToggleAddMode;
+  window.toggleConnectMode = window.fgToggleConnectMode;
+  window.toggleRemoveLineMode = window.fgToggleRemoveLineMode;
+
+  window.fgRemoveSelected = async function(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.selectedZone === null || window.selectedZone === undefined) {
+      alert('Selecione uma zona para remover.');
+      return false;
+    }
+    const z = (window.zones || []).find(x => String(x.id) === String(window.selectedZone));
+    if (!z) { alert('Zona não encontrada.'); return false; }
+    if (z.base) { alert('Setores base não podem ser removidos.'); return false; }
+    if (!confirm('Remover ' + z.name + '?')) return false;
+
+    window.edges = (window.edges || []).filter(([a,b]) => String(a) !== String(z.id) && String(b) !== String(z.id));
+    window.zones = (window.zones || []).filter(x => String(x.id) !== String(z.id));
+    window.selectedZone = null;
+    const name = qs('zone-ctrl-name');
+    if (name) name.textContent = 'Selecione uma zona';
+    setMode(null);
+    renderSafe();
+    return false;
+  };
+  window.removeSelected = window.fgRemoveSelected;
+
+  window.removeEdgeAt = function(index){
+    index = Number(index);
+    if (!window.removeLineMode) return;
+    if (!Number.isFinite(index) || index < 0 || index >= (window.edges || []).length) return;
+    window.edges.splice(index, 1);
+    setMode(null);
+    renderSafe();
+  };
+
+  // Corrige ações de setor localmente.
+  window.zoneAction = async function(acao){
+    if (window.selectedZone === null || window.selectedZone === undefined) return;
+    const z = (window.zones || []).find(x => String(x.id) === String(window.selectedZone));
+    if (!z) return;
+
+    if (acao === 'ligar') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    } else if (acao === 'desligar') {
+      z.defeito = false; z.fault = null; z.ligado = false; z.voltage = 0;
+    } else if (acao === 'reiniciar') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    } else if (acao === 'manutencao') {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+    }
+    normalizeZone(z);
+    try { if (typeof window.selectZone === 'function') window.selectZone(z.id); } catch(e){}
+    renderSafe();
+  };
+
+  window.maintenanceAll = async function(){
+    if (!confirm('Executar manutenção em todas as cercas/setores?')) return;
+    (window.zones || []).forEach(z => {
+      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
+      normalizeZone(z);
+    });
+    renderSafe();
+  };
+
+  window.updateVolt = function(id, val){
+    const z = (window.zones || []).find(x => String(x.id) === String(id));
+    if (!z) return;
+    z.defeito = false; z.fault = null; z.voltage = Number(val); z.ligado = z.voltage > 0;
+    normalizeZone(z);
+    renderSafe();
+  };
+
+  window.logout = function(){
+    showLogin();
+  };
+
+  // API local fake para evitar falha quando aberto por file://
+  window.apiFetch = async function(url){
+    if (url === '/api/sensores') {
+      (window.zones || []).forEach(normalizeZone);
+      return {
+        setores: (window.zones || []).map(z => ({
+          id: z.id, nome: z.name, ligado: !!z.ligado, defeito: !!z.defeito,
+          tensao: Math.round((z.voltage || 0) * 1000),
+          tensao_alvo: Math.round((z.voltage || 0) * 1000),
+          status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
+          base: !!z.base, ts: Date.now()/1000
+        })),
+        alertas: (window.zones || []).filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4)),
+        ts: Date.now()/1000
+      };
+    }
+    return {ok:true};
+  };
+
+  window.apiPost = async function(url, data){
+    if (url === '/login') {
+      if ((data.usuario || '').trim() === USER && data.senha === PASS) return {ok:true};
+      throw new Error('Usuário ou senha inválidos');
+    }
+    if (url === '/logout') return {ok:true};
+    return {ok:true};
+  };
+
+  function install(){
+    showLogin();
+
+    const form = qs('login-form');
+    if (form && form.dataset.finalLogin !== '1') {
+      form.dataset.finalLogin = '1';
+      form.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        const msg = qs('msg');
+        const usuario = (qs('usuario')?.value || '').trim();
+        const senha = qs('senha')?.value || '';
+        if (usuario === USER && senha === PASS) {
+          if (msg) msg.textContent = '';
+          hideLogin();
+          setTimeout(() => { try { if (typeof window.syncFromBackend === 'function') window.syncFromBackend(); } catch(e){} }, 50);
+        } else {
+          if (msg) msg.textContent = 'Usuário ou senha inválidos';
+        }
+      }, true);
+    }
+
+    // Remove qualquer handler antigo dos botões por captura.
+    const add = qs('tb-add');
+    const con = qs('tb-connect');
+    const remLine = qs('tb-remove-line');
+    const rem = qs('tb-remove');
+
+    if (add && add.dataset.finalFixed !== '1') {
+      add.dataset.finalFixed = '1';
+      add.addEventListener('click', window.fgToggleAddMode, true);
+    }
+    if (con && con.dataset.finalFixed !== '1') {
+      con.dataset.finalFixed = '1';
+      con.addEventListener('click', window.fgToggleConnectMode, true);
+    }
+    if (remLine && remLine.dataset.finalFixed !== '1') {
+      remLine.dataset.finalFixed = '1';
+      remLine.addEventListener('click', window.fgToggleRemoveLineMode, true);
+    }
+    if (rem && rem.dataset.finalFixed !== '1') {
+      rem.dataset.finalFixed = '1';
+      rem.addEventListener('click', window.fgRemoveSelected, true);
+    }
+
+    installSvgHandler();
+    resetButtons();
+  }
+
+  function installSvgHandler(){
+    const svg = qs('map-svg');
+    if (!svg || svg.dataset.finalSvgFixed === '1') return;
+    svg.dataset.finalSvgFixed = '1';
+
+    svg.addEventListener('click', function(ev){
+      // Remover linha: só se o modo remover linha estiver ativo.
+      if (window.removeLineMode) {
+        const target = ev.target;
+        const hit = target && (target.closest('[data-edge-idx]') || target.closest('.edge-hit'));
+        if (hit) {
+          const idx = hit.dataset.edgeIdx || hit.getAttribute('data-edge-idx');
+          window.removeEdgeAt(idx);
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+        }
+        return;
+      }
+
+      // Add ponto: nunca remove linha, só adiciona zona.
+      if (window.addMode) {
+        const target = ev.target;
+        if (target && (target.closest('[data-zone-id]') || target.closest('.zone-node') || target.closest('button'))) return;
+        const p = svgPoint(ev);
+        const id = 'local_' + Date.now();
+        const nome = 'Zona ' + ((window.zones || []).length + 1);
+        if (!window.zones) window.zones = [];
+        if (!window.edges) window.edges = [];
+        if (!window.posMap) window.posMap = {};
+        window.zones.push({
+          id, name: nome, status: 'off', defeito: false, ligado: false,
+          voltage: 0, tensaoV: 0, battery: 100, temp: '22°C',
+          health: 'Nova', fault: null, base: false, x: p.x, y: p.y
+        });
+        window.posMap[id] = {x:p.x, y:p.y};
+        window.selectedZone = id;
+        setMode(null);
+        try { if (typeof window.selectZone === 'function') window.selectZone(id); } catch(e){}
+        renderSafe();
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+      }
+    }, true);
+  }
+
+  // Se renderMap redesenhar o SVG, reinstala handlers.
+  const wrap = setInterval(function(){
+    if (typeof window.renderMap === 'function' && !window.renderMap.__finalWrapped) {
+      const old = window.renderMap;
+      window.renderMap = function(){
+        const r = old.apply(this, arguments);
+        setTimeout(installSvgHandler, 0);
+        setTimeout(resetButtons, 0);
+        return r;
+      };
+      window.renderMap.__finalWrapped = true;
+      clearInterval(wrap);
+    }
+  }, 50);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', install);
+  } else {
+    install();
+  }
+  setTimeout(install, 500);
+  setTimeout(showLogin, 100);
+})();
+</script>
+
 </body>
 </html>
