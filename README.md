@@ -198,8 +198,165 @@ Representação da infraestrutura real:
 
 # Considerações Finais
 
-O projeto Fence Guard SCADA apresenta uma solução moderna para monitoramento de cercas elétricas rurais, oferecendo visualização em tempo real, controle operacional e mecanismos de manutenção preventiva.
-
+O projeto Fence Guard SCADA apresenta uma solução moderna para monitoramento de cercas elétricas rurais, oferecendo visualização em tempo real, controle 
+operacional e mecanismos de manutenção preventiva.
 A arquitetura foi desenvolvida para permitir expansão futura, incluindo integração com dispositivos IoT, sensores físicos e banco de dados persistente.
+
+# INSTRUSÇÔES DE USO
+
+# Como Executar a Aplicação
+
+A aplicação já está pronta para uso e não requer configuração adicional.
+
+## Abrindo o Sistema
+
+1. Abra o arquivo `index.html` em qualquer navegador moderno:
+
+   * Google Chrome
+   * Microsoft Edge
+   * Mozilla Firefox
+
+2. A tela de login será exibida automaticamente.
+
+3. Utilize a conta de teste:
+
+```text
+Usuário: UsuarioExemplar
+Senha: Senha123
+```
+
+4. Clique em **Entrar no Sistema**.
+
+5. O painel principal do Fence Guard SCADA será carregado.
+
+---
+
+# Como Utilizar
+
+## 1. Selecionar um Setor
+
+Clique em qualquer setor exibido no mapa para visualizar suas informações.
+
+Ao selecionar um setor, serão exibidos:
+
+* Status operacional
+* Tensão atual
+* Estado da cerca
+* Informações de monitoramento
+
+---
+
+## 2. Controle dos Setores
+
+Após selecionar um setor, utilize os controles disponíveis:
+
+### Ligar
+
+Ativa o setor selecionado.
+
+### Desligar
+
+Desativa o setor selecionado.
+
+### Reiniciar
+
+Reinicia o funcionamento do setor.
+
+### Manutenção
+
+Remove falhas e restaura o setor para condição operacional.
+
+---
+
+## 3. Ajuste de Tensão
+
+Utilize o controle deslizante para alterar a tensão do setor.
+
+O sistema atualiza automaticamente:
+
+* Estado do setor
+* Indicadores visuais
+* Alertas de operação
+
+---
+
+## 4. Adicionar Novo Ponto
+
+1. Clique em **Add ponto**.
+2. Clique em uma área livre do mapa.
+3. Um novo ponto será criado.
+
+---
+
+## 5. Conectar Pontos
+
+1. Clique em **Ligar pontos**.
+2. Clique no primeiro ponto.
+3. Clique no segundo ponto.
+4. Uma nova conexão será criada.
+
+---
+
+## 6. Remover Linha
+
+1. Clique em **Remover linha**.
+2. Clique na linha desejada.
+3. A conexão será removida.
+
+---
+
+## 7. Remover Ponto
+
+1. Selecione um ponto criado pelo usuário.
+2. Clique em **Remover**.
+3. Confirme a operação.
+
+Obs.: setores principais do sistema não podem ser removidos.
+
+---
+
+## 8. Monitoramento
+
+O painel exibe continuamente:
+
+* Setores ativos
+* Setores desligados
+* Setores críticos
+* Falhas detectadas
+* Tensão média da cerca
+
+---
+
+## 9. Diagnóstico
+
+Os indicadores de status utilizam as seguintes cores:
+
+🟢 Verde → Operação normal
+
+🟡 Amarelo → Atenção
+
+🔴 Vermelho → Falha ou setor crítico
+
+⚫ Cinza → Setor desligado
+
+---
+
+## 10. Encerrando a Sessão
+
+Clique em **Logout** para retornar à tela de login.
+
+---
+
+# Fluxo Rápido de Uso
+
+1. Abrir `index.html`
+2. Fazer login
+3. Selecionar um setor
+4. Monitorar o status
+5. Ajustar tensão se necessário
+6. Executar manutenção quando houver falhas
+7. Utilizar o editor para adicionar ou remover elementos do mapa
+
+O sistema foi desenvolvido para simular o monitoramento e o controle de uma cerca elétrica rural por meio de uma interface SCADA interativa.
 
 
