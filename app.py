@@ -256,25 +256,34 @@ def api_controle():
 
 @app.route("/api/adicionar", methods=["POST"])
 def api_adicionar():
+    """Cria uma nova zona persistida no estado do backend.
+
+    O frontend depende do `id` retornado aqui para manter a posição do ponto no
+    mapa. Por isso a criação precisa ser atômica e sempre devolver o setor
+    serializado completo.
+    """
     global _proximo_id
     body = json_body()
-    nome = body.get("nome", "").strip()[:60]
+    nome = str(body.get("nome", "")).strip()[:60]
     if not nome:
         return jsonify({"ok": False, "msg": "Nome obrigatório"}), 400
 
-    sid = f"setor_{_proximo_id}"
-    _proximo_id += 1
-    setores[sid] = {
-        "nome": nome,
-        "ligado": False,
-        "defeito": False,
-        "tensao": 0.0,
-        "tensao_alvo": 0.0,
-        "ts": time.time(),
-    }
-    historico_tensao[sid] = []
-    registrar_evento("layout", f"Novo setor criado: {nome}", sid)
-    return jsonify({"ok": True, "setor": serializar_setor(sid, setores[sid])})
+    with state_lock:
+        sid = f"setor_{_proximo_id}"
+        _proximo_id += 1
+        setores[sid] = {
+            "nome": nome,
+            "ligado": False,
+            "defeito": False,
+            "tensao": 0.0,
+            "tensao_alvo": 0.0,
+            "ts": time.time(),
+        }
+        historico_tensao[sid] = []
+        registrar_evento("layout", f"Novo setor criado: {nome}", sid)
+        setor = serializar_setor(sid, setores[sid])
+
+    return jsonify({"ok": True, "setor": setor})
 
 
 @app.route("/api/remover", methods=["POST"])
