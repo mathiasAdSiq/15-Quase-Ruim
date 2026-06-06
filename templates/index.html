@@ -360,19 +360,7 @@ body { padding-top: 28px; }
 .nav-logo{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;padding:4px 0 10px;margin-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);user-select:none}
 .nav-logo svg{opacity:.9}
 .nav-logo-wordmark{font-size:7.5px;font-weight:800;letter-spacing:.08em;color:var(--color-text-secondary);text-transform:uppercase;line-height:1.15;text-align:center}
-.arch-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:linear-gradient(180deg,rgba(31,41,55,.96),rgba(15,23,42,.96));padding:12px;margin-bottom:8px}
-.arch-title{font-size:13px;font-weight:700;color:var(--color-text-primary);display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.arch-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.45}
-.arch-layer{display:flex;gap:8px;align-items:flex-start;border:0.5px solid var(--color-border-tertiary);background:rgba(2,6,23,.35);border-radius:8px;padding:8px;margin-top:8px}
-.arch-dot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0}
-.arch-layer b{display:block;font-size:12px;color:var(--color-text-primary);margin-bottom:2px}
-.arch-layer span{display:block;font-size:10.5px;color:var(--color-text-secondary);line-height:1.35}
-.arch-diagram{margin-top:10px;border-radius:10px;overflow:hidden;border:0.5px solid var(--color-border-tertiary);background:#0f172a}
-.arch-diagram svg{width:100%;height:auto;display:block}
-.arch-kpi{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.arch-kpi div{background:rgba(15,23,42,.66);border:0.5px solid var(--color-border-tertiary);border-radius:7px;padding:7px}
-.arch-kpi b{font-size:15px;color:var(--color-text-primary);display:block}
-.arch-kpi span{font-size:10px;color:var(--color-text-secondary)}
+
 
 .auth-chip{font-size:11px;color:#cbd5e1;border:0.5px solid #334155;border-radius:999px;padding:2px 8px;background:#0f172a}
 .logout-btn{font-family:monospace;font-size:11px;border:0.5px solid #4b5563;border-radius:6px;background:#111827;color:#f9fafb;padding:3px 8px;cursor:pointer}
@@ -491,7 +479,6 @@ body { padding-top: 28px; }
     <button class="nav-btn"        id="nb-fence"    onclick="showPanel('fence')"    title="Fence"><i class="ti ti-fence"></i></button>
     <button class="nav-btn"        id="nb-voltage"  onclick="showPanel('voltage')"  title="Tensão"><i class="ti ti-adjustments-horizontal"></i></button>
     <button class="nav-btn"        id="nb-battery"  onclick="showPanel('battery')"  title="Bateria"><i class="ti ti-battery-2"></i></button>
-    <button class="nav-btn"        id="nb-architecture" onclick="showPanel('architecture')" title="Arquitetura"><i class="ti ti-sitemap"></i></button>
     <div style="flex:1"></div>
     <button class="nav-btn"        id="nb-settings" onclick="showPanel('settings')" title="Config"><i class="ti ti-settings"></i></button>
     <button class="nav-btn"        id="nb-support"  onclick="showPanel('support')"  title="Suporte"><i class="ti ti-headset"></i><div class="badge" id="badge-support" style="display:none"></div></button>
@@ -551,84 +538,6 @@ body { padding-top: 28px; }
     </div>
 
 
-    <!-- ARCHITECTURE -->
-    <div class="panel-section" id="sec-architecture">
-      <div class="panel-head"><h2>Arquitetura</h2><p>Modelo técnico da solução</p></div>
-      <div class="panel-body">
-        <div class="arch-card">
-          <div class="arch-title"><i class="ti ti-shield-bolt"></i>Fence Guard SCADA v8</div>
-          <div class="arch-sub">Sistema web para monitorar setores da cerca elétrica rural, controlar tensão, indicar falhas e colorir fios conforme a tensão.</div>
-          <div class="arch-kpi" id="arch-kpi">
-            <div><b>—</b><span>setores</span></div><div><b>—</b><span>tensão média</span></div>
-          </div>
-        </div>
-
-        <div class="arch-card">
-          <div class="arch-title"><i class="ti ti-route"></i>Fluxo da arquitetura</div>
-          <div class="arch-diagram">
-            <svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama da arquitetura Fence Guard">
-              <defs>
-                <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#93c5fd"/></marker>
-                <filter id="fgShadow"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity=".35"/></filter>
-              </defs>
-              <rect width="820" height="520" fill="#0f172a"/>
-              <text x="36" y="42" fill="#f9fafb" font-size="24" font-weight="800" font-family="Inter,Arial">Fence Guard — Modelo da Arquitetura</text>
-              <text x="36" y="68" fill="#94a3b8" font-size="13" font-family="Inter,Arial">Dashboard + Flask API + Núcleo SCADA + Cerca elétrica</text>
-
-              <g filter="url(#fgShadow)">
-                <rect x="36" y="110" width="155" height="90" rx="16" fill="#111827" stroke="#1D9E75"/>
-                <text x="58" y="145" fill="#f9fafb" font-size="16" font-weight="700">Operador</text>
-                <text x="58" y="171" fill="#cbd5e1" font-size="11">mapa · tensão · manutenção</text>
-
-                <rect x="255" y="90" width="190" height="130" rx="16" fill="#111827" stroke="#378ADD"/>
-                <text x="282" y="126" fill="#f9fafb" font-size="16" font-weight="700">Frontend Web</text>
-                <text x="282" y="153" fill="#cbd5e1" font-size="11">HTML + CSS + JavaScript</text>
-                <text x="282" y="175" fill="#94a3b8" font-size="10">Mapa SVG</text>
-                <text x="282" y="194" fill="#94a3b8" font-size="10">Fios coloridos por tensão</text>
-
-                <rect x="520" y="90" width="250" height="130" rx="16" fill="#111827" stroke="#EF9F27"/>
-                <text x="550" y="126" fill="#f9fafb" font-size="16" font-weight="700">Backend Flask API</text>
-                <text x="550" y="153" fill="#cbd5e1" font-size="11">/api/sensores · /api/tensao</text>
-                <text x="550" y="175" fill="#94a3b8" font-size="10">/api/controle · /api/diagnostico</text>
-                <text x="550" y="194" fill="#94a3b8" font-size="10">/api/arquitetura · /api/estatisticas</text>
-
-                <rect x="130" y="315" width="210" height="120" rx="16" fill="#111827" stroke="#5DCAA5"/>
-                <text x="160" y="351" fill="#f9fafb" font-size="16" font-weight="700">Núcleo SCADA</text>
-                <text x="160" y="378" fill="#cbd5e1" font-size="11">regras de falha</text>
-                <text x="160" y="399" fill="#94a3b8" font-size="10">histórico · eventos · tensão alvo</text>
-
-                <rect x="470" y="315" width="235" height="120" rx="16" fill="#111827" stroke="#E24B4A"/>
-                <text x="500" y="351" fill="#f9fafb" font-size="16" font-weight="700">Cerca Elétrica</text>
-                <text x="500" y="378" fill="#cbd5e1" font-size="11">setores · fios · energizador</text>
-                <line x1="505" y1="405" x2="665" y2="405" stroke="#378ADD" stroke-width="4"/>
-                <line x1="505" y1="417" x2="665" y2="417" stroke="#EF9F27" stroke-width="4"/>
-                <line x1="505" y1="429" x2="665" y2="429" stroke="#E24B4A" stroke-width="4"/>
-              </g>
-
-              <path d="M193 155 C220 155 230 155 252 155" stroke="#93c5fd" stroke-width="3" fill="none" marker-end="url(#arr)"/>
-              <path d="M447 155 C477 155 490 155 517 155" stroke="#93c5fd" stroke-width="3" fill="none" marker-end="url(#arr)"/>
-              <path d="M645 222 C635 270 535 295 350 344" stroke="#93c5fd" stroke-width="3" fill="none" marker-end="url(#arr)"/>
-              <path d="M342 375 C382 375 420 375 467 375" stroke="#93c5fd" stroke-width="3" fill="none" marker-end="url(#arr)"/>
-              <path d="M470 420 C340 485 185 475 205 438" stroke="#5DCAA5" stroke-width="3" fill="none" stroke-dasharray="8 7" marker-end="url(#arr)"/>
-
-              <rect x="36" y="462" width="748" height="36" rx="12" fill="#0b1220" stroke="#334155"/>
-              <circle cx="66" cy="480" r="7" fill="#378ADD"/><text x="82" y="485" fill="#cbd5e1" font-size="11">baixa</text>
-              <circle cx="175" cy="480" r="7" fill="#EF9F27"/><text x="191" y="485" fill="#cbd5e1" font-size="11">atenção</text>
-              <circle cx="298" cy="480" r="7" fill="#E24B4A"/><text x="314" y="485" fill="#cbd5e1" font-size="11">alta/falha</text>
-              <line x1="445" y1="480" x2="520" y2="480" stroke="#B4B2A9" stroke-width="4" stroke-dasharray="8 6"/><text x="532" y="485" fill="#cbd5e1" font-size="11">desligado ou sem conexão</text>
-            </svg>
-          </div>
-        </div>
-
-        <div class="arch-card" id="arch-layers">
-          <div class="arch-title"><i class="ti ti-stack-2"></i>Camadas</div>
-          <div class="arch-layer"><div class="arch-dot" style="background:#1D9E75"></div><div><b>Operador</b><span>Interage com o mapa, ajusta tensão e aciona manutenção.</span></div></div>
-          <div class="arch-layer"><div class="arch-dot" style="background:#378ADD"></div><div><b>Frontend</b><span>Renderiza painel, mapa SVG, cores dos fios e controles.</span></div></div>
-          <div class="arch-layer"><div class="arch-dot" style="background:#EF9F27"></div><div><b>Backend Flask</b><span>Expõe sensores, controle, tensão, diagnóstico e arquitetura.</span></div></div>
-          <div class="arch-layer"><div class="arch-dot" style="background:#E24B4A"></div><div><b>Cerca elétrica</b><span>Representa setores, fios, energizador e sensores simulados.</span></div></div>
-        </div>
-      </div>
-    </div>
 
     <!-- SETTINGS -->
     <div class="panel-section" id="sec-settings">
@@ -701,18 +610,21 @@ body { padding-top: 28px; }
 
 </div><!-- /app -->
 
+
 <script>
-// ── AUTH / LOGIN ──────────────────────────────────────────────────────────────
-// Senha armazenada como hash SHA-256 — nunca em texto simples.
-// Mesmo que alguém inspecione o localStorage ou o código JS em memória,
-// só encontrará o hash irreversível, jamais a senha original.
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH
+// Senha nunca guardada em texto — apenas o hash SHA-256 via Web Crypto API.
+// ═══════════════════════════════════════════════════════════════════════════
+
+let currentUser = null;
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
-
-let currentUser = null;
 
 function loginCheck() {
   const u = document.getElementById('login-user').value.trim();
@@ -727,17 +639,13 @@ async function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
   if (!u || p.length < 4) return;
-
   const hash = await sha256(p);
   const stored = localStorage.getItem('fg_user_' + u);
-
   if (!stored) {
-    // Primeira vez: cria conta com hash da senha
     localStorage.setItem('fg_user_' + u, JSON.stringify({ hash }));
     finishLogin(u);
   } else {
-    const data = JSON.parse(stored);
-    if (data.hash === hash) {
+    if (JSON.parse(stored).hash === hash) {
       finishLogin(u);
     } else {
       document.getElementById('login-error').textContent = 'Senha incorreta.';
@@ -748,18 +656,23 @@ async function doLogin() {
 
 function finishLogin(username) {
   currentUser = username;
-  // Propaga nome em todos os locais da UI
+  sessionStorage.setItem('fg_session', username);
   document.getElementById('sb-username').textContent = username;
   document.getElementById('login-screen').classList.add('hidden');
-  // Usa sessionStorage para manter sessão enquanto a aba estiver aberta
-  sessionStorage.setItem('fg_session', username);
+  // Carrega estado isolado deste usuário antes do primeiro sync
+  loadUserState();
+  syncFromBackend();
 }
 
 function logout() {
+  saveUserState();          // persiste estado da conta atual
   currentUser = null;
   sessionStorage.removeItem('fg_session');
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
+  // Limpa estado global — próxima conta começa do zero
+  zones = []; edges = []; posMap = {}; selectedZone = null;
+  selectedBatt = null; selectedVoltZ = null;
+  // Reseta UI de login
+  ['login-user','login-pass'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('login-error').textContent = '';
   document.getElementById('login-btn').disabled = true;
   document.getElementById('login-screen').classList.remove('hidden');
@@ -771,34 +684,83 @@ function logout() {
   if (s) finishLogin(s);
 })();
 
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-const POLL_MS    = 3000;
-const TENSAO_MAX = 8000; // referência do backend em V
-const FAULT_TYPES = ["Tensão baixa / capacidade insuficiente", "Fios soltos / desconectados", "Ponto com dano físico"];
 
-// ── ESTADO LOCAL ──────────────────────────────────────────────────────────────
-// zones sincronizadas com o backend; também têm pos x/y local
-let zones   = [];
-let edges   = [];   // [[id,id], …]
-let nextId  = 100;  // IDs locais para zonas extras
+// ═══════════════════════════════════════════════════════════════════════════
+// ESTADO POR USUÁRIO — salva e carrega do localStorage
+// Cada conta tem sua própria chave fg_state_<usuario>.
+// Contém: posições dos nós (posMap), arestas (edges) e zonas locais.
+// As zonas do backend são sempre recriadas pelo sync — só posições persistem.
+// ═══════════════════════════════════════════════════════════════════════════
 
-// mapeamento: id_backend → posição no canvas
-let posMap  = {};   // { "setor_1": {x,y}, … }
+function stateKey() { return 'fg_state_' + currentUser; }
+
+function saveUserState() {
+  if (!currentUser) return;
+  try {
+    localStorage.setItem(stateKey(), JSON.stringify({
+      posMap,
+      edges,
+      localZones: zones.filter(z => typeof z.id === 'number'),
+    }));
+  } catch (e) { console.warn('saveUserState falhou:', e); }
+}
+
+function loadUserState() {
+  // Sempre começa com slate limpo — garante isolamento entre contas
+  posMap = {}; edges = []; zones = [];
+  try {
+    const raw = localStorage.getItem(stateKey());
+    if (!raw) return;           // conta nova → defaults aplicados pelo sync
+    const d = JSON.parse(raw);
+    posMap = d.posMap    || {};
+    edges  = d.edges     || [];
+    zones  = d.localZones || [];
+  } catch (e) { console.warn('loadUserState falhou:', e); }
+}
+
+// Salva de forma throttled para não sobrecarregar em cada frame de drag
+let _saveTimer = null;
+function scheduleSave() {
+  if (!currentUser) return;
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(saveUserState, 400);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURAÇÃO
+// ═══════════════════════════════════════════════════════════════════════════
+
+const POLL_MS     = 3000;
+const TENSAO_MAX  = 8000;
+const FAULT_TYPES = [
+  'Tensão baixa / capacidade insuficiente',
+  'Fios soltos / desconectados',
+  'Ponto com dano físico',
+];
 
 const DEFAULT_POSITIONS = {
-  // layout inspirado no sketch da lousa: perímetro retangular com postes
   setor_1: { x: 120, y: 72  },
   setor_2: { x: 470, y: 92  },
   setor_3: { x: 440, y: 335 },
   setor_4: { x: 115, y: 335 },
 };
-
 const DEFAULT_EDGES = [
-  ["setor_1","setor_2"],
-  ["setor_2","setor_3"],
-  ["setor_3","setor_4"],
-  ["setor_4","setor_1"],
+  ['setor_1','setor_2'],
+  ['setor_2','setor_3'],
+  ['setor_3','setor_4'],
+  ['setor_4','setor_1'],
 ];
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ESTADO DO MAPA (globais mutáveis — sempre isolados por loadUserState)
+// ═══════════════════════════════════════════════════════════════════════════
+
+let zones   = [];
+let edges   = [];
+let posMap  = {};
+let nextId  = 100;
 
 let selectedZone  = null;
 let selectedBatt  = null;
@@ -811,1052 +773,232 @@ let connectPreview = null;
 let removeLineMode = false;
 let disconnectedZones = [];
 
-const statusColors = { on: "#1D9E75", off: "#888780", critical: "#EF9F27", fault: "#E24B4A" };
-const statusBg     = { on: "#E1F5EE", off: "#F1EFE8", critical: "#FAEEDA", fault: "#FCEBEB" };
-const statusTextColor = { on: "#0F6E56", off: "#5F5E5A", critical: "#633806", fault: "#A32D2D" };
-const faultColors  = ["#BA7517","#A32D2D","#993556"];
-const faultBg      = ["#FAEEDA","#FCEBEB","#FBEAF0"];
-const faultBorder  = ["#FAC775","#F09595","#F4C0D1"];
-const faultIcons   = ["ti-bolt-off","ti-plug-connected-x","ti-tools"];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PALETA / UTILITÁRIOS DE COR
+// ═══════════════════════════════════════════════════════════════════════════
+
+const STATUS_COLOR    = { on:'#1D9E75', off:'#888780', critical:'#EF9F27', fault:'#E24B4A' };
+const STATUS_BG       = { on:'#E1F5EE', off:'#F1EFE8', critical:'#FAEEDA', fault:'#FCEBEB' };
+const STATUS_TXT      = { on:'#0F6E56', off:'#5F5E5A', critical:'#633806', fault:'#A32D2D' };
 
 function voltColor(v) {
-  // Cor por tensão real: desligado/cinza, baixa/vermelho, crítica/amarelo, normal/verde, alta/azul.
-  if (!v || v <= 0) return "#888780";
-  if (v < 3) return "#E24B4A";
-  if (v < 4) return "#EF9F27";
-  if (v < 6) return "#378ADD";
-  return "#1D9E75";
+  if (!v || v <= 0) return '#888780';
+  if (v < 3) return '#E24B4A';
+  if (v < 4) return '#EF9F27';
+  if (v < 6) return '#378ADD';
+  return '#1D9E75';
 }
 function voltBadgeStyle(v) {
-  if (!v || v <= 0) return "background:#F1EFE8;color:#5F5E5A";
-  if (v < 3) return "background:#FCEBEB;color:#A32D2D";
-  if (v < 4) return "background:#FAEEDA;color:#633806";
-  if (v < 6) return "background:#E6F1FB;color:#0C447C";
-  return "background:#E1F5EE;color:#0F6E56";
+  if (!v || v <= 0) return 'background:#F1EFE8;color:#5F5E5A';
+  if (v < 3) return 'background:#FCEBEB;color:#A32D2D';
+  if (v < 4) return 'background:#FAEEDA;color:#633806';
+  if (v < 6) return 'background:#E6F1FB;color:#0C447C';
+  return 'background:#E1F5EE;color:#0F6E56';
 }
-function edgeVoltageColor(za, zb) {
+function edgeVoltColor(za, zb) {
   if (za.defeito || zb.defeito || za.status === 'fault' || zb.status === 'fault') return '#E24B4A';
   if (!za.ligado || !zb.ligado || za.status === 'off' || zb.status === 'off') return '#888780';
   return voltColor(Math.min(za.voltage || 0, zb.voltage || 0));
 }
-function battColor(p) { return p > 50 ? "#1D9E75" : p > 20 ? "#EF9F27" : "#E24B4A"; }
+function battColor(p) { return p > 50 ? '#1D9E75' : p > 20 ? '#EF9F27' : '#E24B4A'; }
 function showVoltOnMap() { return document.getElementById('tog-voltage-map').classList.contains('on'); }
-
-// Converte tensão em Volts (backend) → kV inteiro para display
-function tensaoToKv(tensaoV) { return Math.round(tensaoV / 1000); }
-
-// Converte status backend → status UI
-function backendStatusToUI(s) {
-  // s.status: "normal" | "critico" | "falha" | "desligado"
-  if (s.defeito || s.status === "falha") return "fault";
-  if (!s.ligado || s.status === "desligado") return "off";
-  if (s.status === "critico") return "critical";
-  return "on";
+function tensaoToKv(v) { return Math.round(v / 1000); }
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
+function backendStatusToUI(s) {
+  if (s.defeito || s.status === 'falha')     return 'fault';
+  if (!s.ligado || s.status === 'desligado') return 'off';
+  if (s.status === 'critico')                return 'critical';
+  return 'on';
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DIAGNÓSTICO DE CONEXÃO
+// ═══════════════════════════════════════════════════════════════════════════
+
 function computeDisconnectedZones() {
-  const zoneIds = zones.map(z => z.id);
-  if (zoneIds.length === 0) return [];
+  if (!zones.length) return [];
+  const ids     = zones.map(z => z.id);
+  const validSet = new Set(ids.map(String));
 
-  const validIds = new Set(zoneIds.map(String));
-  const adjacency = new Map(zoneIds.map(id => [String(id), new Set()]));
+  // Remove arestas inválidas in-place
+  edges = edges.filter(([a, b]) =>
+    validSet.has(String(a)) && validSet.has(String(b)) && String(a) !== String(b));
 
-  // Mantém apenas ligações válidas para evitar bug com pontos removidos.
-  edges = edges.filter(([a, b]) => validIds.has(String(a)) && validIds.has(String(b)) && String(a) !== String(b));
+  const adj = new Map(ids.map(id => [String(id), new Set()]));
+  edges.forEach(([a, b]) => { adj.get(String(a))?.add(String(b)); adj.get(String(b))?.add(String(a)); });
 
-  edges.forEach(([a, b]) => {
-    const sa = String(a), sb = String(b);
-    adjacency.get(sa)?.add(sb);
-    adjacency.get(sb)?.add(sa);
-  });
+  const isolated = ids.filter(id => adj.get(String(id)).size === 0);
 
-  // Qualquer ponto sem nenhuma linha é claramente "cerca não conectada".
-  const isolated = zoneIds.filter(id => (adjacency.get(String(id))?.size || 0) === 0);
-
-  // Também detecta ilhas: se existem grupos separados de linhas, marca os grupos menores.
-  const visited = new Set();
-  const components = [];
-  zoneIds.forEach(id => {
+  // BFS para encontrar componentes
+  const visited = new Set(), components = [];
+  ids.forEach(id => {
     const sid = String(id);
     if (visited.has(sid)) return;
-    const stack = [sid];
-    const comp = [];
+    const stack = [sid], comp = [];
     visited.add(sid);
     while (stack.length) {
-      const cur = stack.pop();
-      comp.push(cur);
-      (adjacency.get(cur) || []).forEach(next => {
-        if (!visited.has(next)) {
-          visited.add(next);
-          stack.push(next);
-        }
-      });
+      const cur = stack.pop(); comp.push(cur);
+      adj.get(cur).forEach(n => { if (!visited.has(n)) { visited.add(n); stack.push(n); } });
     }
     components.push(comp);
   });
 
-  let disconnected = new Set(isolated.map(String));
+  const disc = new Set(isolated.map(String));
   if (components.length > 1) {
-    const largest = components
-      .filter(c => c.length > 1)
-      .sort((a, b) => b.length - a.length)[0] || components.sort((a, b) => b.length - a.length)[0];
-
-    const largestSet = new Set(largest || []);
-    components.forEach(comp => {
-      if (comp === largest) return;
-      comp.forEach(id => disconnected.add(id));
-    });
-
-    // Se a maior ilha não conecta todos, só as ilhas menores/isoladas são marcadas.
-    // Isso evita pintar o perímetro inteiro como erro quando há apenas um ponto solto.
+    const largest = [...components].sort((a, b) => b.length - a.length)[0];
+    components.forEach(c => { if (c !== largest) c.forEach(id => disc.add(id)); });
   }
-
-  return zoneIds.filter(id => disconnected.has(String(id)));
+  return ids.filter(id => disc.has(String(id)));
 }
 
-function isZoneDisconnected(id) {
-  return disconnectedZones.some(x => String(x) === String(id));
-}
+function isDisconnected(id) { return disconnectedZones.some(x => String(x) === String(id)); }
 
 function updateDisconnectedDiagnostics() {
   disconnectedZones = computeDisconnectedZones();
   const count = disconnectedZones.length;
   const names = disconnectedZones
-    .map(id => zones.find(z => String(z.id) === String(id))?.name)
-    .filter(Boolean);
-
+    .map(id => zones.find(z => String(z.id) === String(id))?.name).filter(Boolean);
   const hint = document.getElementById('tb-hint');
-  if (hint && count > 0 && !addMode && !connectMode && !removeLineMode) {
-    hint.textContent = count === 1
-      ? 'Cerca não conectada: ' + names[0]
-      : 'Cercas não conectadas: ' + names.join(', ');
-  }
-
+  if (hint && count > 0 && !addMode && !connectMode && !removeLineMode)
+    hint.textContent = count === 1 ? 'Cerca não conectada: ' + names[0] : 'Cercas não conectadas: ' + names.join(', ');
   const badge = document.getElementById('badge-support');
   if (badge) badge.style.display = (count > 0 || zones.some(z => z.defeito)) ? '' : 'none';
 }
 
-// ── API ───────────────────────────────────────────────────────────────────────
-async function parseApiResponse(r) {
-  let payload = null;
-  try { payload = await r.json(); } catch (_) {}
-  if (r.status === 401) {
-    window.location.href = '/login';
-    throw new Error(payload?.msg || 'Sessão expirada');
-  }
-  if (!r.ok) {
-    const msg = payload?.msg || payload?.error || `Erro HTTP ${r.status}`;
-    throw new Error(msg);
-  }
-  return payload || {};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// API
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function parseResp(r) {
+  let p = null;
+  try { p = await r.json(); } catch (_) {}
+  if (r.status === 401) { logout(); throw new Error(p?.msg || 'Sessão expirada'); }
+  if (!r.ok) throw new Error(p?.msg || p?.error || `Erro HTTP ${r.status}`);
+  return p || {};
 }
-async function apiFetch(url) {
-  const r = await fetch(url);
-  return parseApiResponse(r);
-}
-async function apiPost(url, data) {
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  return parseApiResponse(r);
-}
+const apiFetch = url => fetch(url).then(parseResp);
+const apiPost  = (url, data) => fetch(url, {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
+}).then(parseResp);
 
 
-// ── SYNC com backend ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// SYNC COM BACKEND
+// ═══════════════════════════════════════════════════════════════════════════
+
 async function syncFromBackend() {
+  if (!currentUser) return;   // não sincroniza enquanto não há sessão
   let data;
-  try { data = await apiFetch('/api/sensores'); }
-  catch(e) { return; }
+  try { data = await apiFetch('/api/sensores'); } catch { return; }
 
-  const backendSetores = data.setores; // array de objetos
+  const setores   = data.setores;
+  const backendIds = new Set(setores.map(s => s.id));
 
-  // Atualiza ou adiciona zonas vindas do backend
-  const backendIds = new Set(backendSetores.map(s => s.id));
-
-  backendSetores.forEach(s => {
-    // Posição: usar salva ou default ou centro
-    if (!posMap[s.id]) {
-      posMap[s.id] = DEFAULT_POSITIONS[s.id]
-        || { x: 200 + Math.random() * 200, y: 100 + Math.random() * 200 };
-    }
+  setores.forEach(s => {
+    // Posição: salva do usuário → default → aleatória
+    if (!posMap[s.id])
+      posMap[s.id] = DEFAULT_POSITIONS[s.id] || { x: 200 + Math.random() * 200, y: 100 + Math.random() * 200 };
     const pos = posMap[s.id];
-
     const uiStatus = backendStatusToUI(s);
-    const kv       = tensaoToKv(s.tensao);
-
+    const kv = tensaoToKv(s.tensao);
     const existing = zones.find(z => z.id === s.id);
     if (existing) {
-      existing.name   = s.nome;
-      existing.status = uiStatus;
-      existing.defeito = s.defeito;
-      existing.ligado  = s.ligado;
-      existing.voltage = kv;
-      existing.tensaoV = s.tensao;
-      existing.x = pos.x;
-      existing.y = pos.y;
-      // fault index aleatório só se ainda não tem
-      if (uiStatus === 'fault' && existing.fault === null)
-        existing.fault = Math.floor(Math.random() * 3);
+      Object.assign(existing, { name: s.nome, status: uiStatus, defeito: s.defeito,
+        ligado: s.ligado, voltage: kv, tensaoV: s.tensao, x: pos.x, y: pos.y });
+      if (uiStatus === 'fault' && existing.fault == null) existing.fault = Math.floor(Math.random() * 3);
       if (uiStatus !== 'fault') existing.fault = null;
     } else {
       zones.push({
-        id:     s.id,
-        name:   s.nome,
-        status: uiStatus,
-        defeito: s.defeito,
-        ligado:  s.ligado,
-        voltage: kv,
-        tensaoV: s.tensao,
+        id: s.id, name: s.nome, status: uiStatus, defeito: s.defeito, ligado: s.ligado,
+        voltage: kv, tensaoV: s.tensao,
         battery: s.base ? 85 + Math.floor(Math.random() * 15) : 60 + Math.floor(Math.random() * 35),
-        temp:    (20 + Math.floor(Math.random() * 12)) + '°C',
-        health:  s.defeito ? 'Verificar' : 'Bom',
-        fault:   uiStatus === 'fault' ? Math.floor(Math.random() * 3) : null,
-        base:    s.base,
-        x: pos.x, y: pos.y,
+        temp: (20 + Math.floor(Math.random() * 12)) + '°C',
+        health: s.defeito ? 'Verificar' : 'Bom',
+        fault: uiStatus === 'fault' ? Math.floor(Math.random() * 3) : null,
+        base: s.base, x: pos.x, y: pos.y,
       });
     }
   });
 
-  // Remove zonas reais que sumiram do backend, mas mantém pontos locais temporários
-  // Isso evita o bug em que "Add ponto" aparecia e sumia no próximo sync.
+  // Remove zonas do backend que sumiram; mantém zonas locais (numéricas)
   zones = zones.filter(z => typeof z.id === 'number' || backendIds.has(z.id));
 
-  // Garante arestas default se ainda não há
-  if (edges.length === 0) {
-    edges = DEFAULT_EDGES.filter(([a,b]) => backendIds.has(a) && backendIds.has(b));
-  }
+  // Arestas default se ainda vazias
+  if (!edges.length) edges = DEFAULT_EDGES.filter(([a, b]) => backendIds.has(a) && backendIds.has(b));
 
   // Status bar
-  const now = new Date().toLocaleTimeString('pt-BR', {hour12: false});
-  document.getElementById('sb-sync').textContent = 'Sync ' + now;
+  const now = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+  document.getElementById('sb-sync').textContent  = 'Sync ' + now;
+  document.getElementById('sb-clock').textContent = now;
 
   const nOk    = zones.filter(z => z.status === 'on').length;
   const nCrit  = zones.filter(z => z.status === 'critical').length;
   const nFault = zones.filter(z => z.defeito).length;
-
   document.getElementById('sb-normal').textContent = nOk   + ' normais';
   document.getElementById('sb-crit').textContent   = nCrit + ' críticos';
   document.getElementById('sb-fault').textContent  = nFault + ' falhas';
-  document.getElementById('sb-clock').textContent  = now;
 
-  // Badge suporte
   updateDisconnectedDiagnostics();
-  const hasFault = nFault > 0;
-  const hasDisconnected = disconnectedZones.length > 0;
-  document.getElementById('badge-support').style.display = (hasFault || hasDisconnected) ? '' : 'none';
+  const hasFault = nFault > 0, hasDisc = disconnectedZones.length > 0;
+  document.getElementById('badge-support').style.display = (hasFault || hasDisc) ? '' : 'none';
   const fc = document.getElementById('support-fault-card');
-  fc.style.display = (hasFault || hasDisconnected) ? '' : 'none';
-  if (hasFault || hasDisconnected) {
-    const faultNames = zones.filter(z => z.defeito).map(z => z.name);
-    const discNames = disconnectedZones.map(id => zones.find(z => String(z.id) === String(id))?.name).filter(Boolean);
+  fc.style.display = (hasFault || hasDisc) ? '' : 'none';
+  if (hasFault || hasDisc) {
     const parts = [];
-    if (faultNames.length) parts.push('Falha detectada em: ' + faultNames.join(', '));
-    if (discNames.length) parts.push('Cerca não conectada: ' + discNames.join(', '));
+    if (nFault) parts.push('Falha em: ' + zones.filter(z => z.defeito).map(z => z.name).join(', '));
+    if (hasDisc) parts.push('Não conectada: ' + disconnectedZones
+      .map(id => zones.find(z => String(z.id) === String(id))?.name).filter(Boolean).join(', '));
     document.getElementById('support-fault-text').textContent = parts.join(' · ');
   }
 
   renderAll();
 }
 
-// ── AÇÃO SOBRE ZONA ───────────────────────────────────────────────────────────
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AÇÕES SOBRE ZONA
+// ═══════════════════════════════════════════════════════════════════════════
+
 async function zoneAction(acao) {
   if (selectedZone === null) return;
   const z = zones.find(z => z.id === selectedZone);
   if (!z) return;
-
-  // zonas locais (não backend) — só atualização local
   if (typeof z.id === 'number') {
-    if (acao === 'ligar')      { z.status = 'on'; z.ligado = true; }
+    if (acao === 'ligar')      { z.status = 'on';  z.ligado = true; }
     if (acao === 'desligar')   { z.status = 'off'; z.ligado = false; z.voltage = 0; }
     if (acao === 'reiniciar')  { if (!z.defeito) { z.status = 'on'; z.ligado = true; z.voltage = Math.max(z.voltage || 5, 5); } }
     if (acao === 'manutencao') { z.status = 'on'; z.defeito = false; z.ligado = true; z.fault = null; z.voltage = Math.max(z.voltage || 5, 5); }
-    selectZone(selectedZone);
-    renderAll();
-    return;
+    selectZone(selectedZone); renderAll(); return;
   }
-
-  const keepSelected = z.id;
+  const keepId = z.id;
   const res = await apiPost('/api/controle', { id: z.id, acao });
-  if (res && res.ok) {
-    await syncFromBackend();
-    selectZone(keepSelected);
-  } else if (res && res.msg) {
-    alert(res.msg);
-  }
+  if (res?.ok) { await syncFromBackend(); selectZone(keepId); }
+  else if (res?.msg) alert(res.msg);
 }
 
-// Manutenção geral: limpa falhas persistentes de todos os setores.
 async function maintenanceAll() {
-  const ok = confirm('Executar manutenção em todas as cercas/setores?');
-  if (!ok) return;
-
+  if (!confirm('Executar manutenção em todas as cercas/setores?')) return;
   try {
     const res = await apiPost('/api/manutencao_todos', {});
     if (!res.ok) throw new Error(res.msg || 'Rota indisponível');
-    await syncFromBackend();
-    document.getElementById('tb-hint').textContent = 'Manutenção geral concluída';
-    return;
-  } catch (err) {
+  } catch {
     for (const z of zones) {
-      if (typeof z.id === 'string') {
-        await apiPost('/api/controle', { id: z.id, acao: 'manutencao' }).catch(() => {});
-      } else {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = true;
-        z.status = 'on';
-        z.voltage = Math.max(z.voltage || 5, 5);
-      }
-    }
-    await syncFromBackend();
-    document.getElementById('tb-hint').textContent = 'Manutenção geral concluída';
-  }
-}
-
-// ── PAINEL LATERAL ────────────────────────────────────────────────────────────
-function showPanel(name) {
-  document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('visible'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sec-' + name).classList.add('visible');
-  document.getElementById('nb-'  + name).classList.add('active');
-  if (name === 'architecture') loadArchitectureSummary();
-}
-
-async function loadArchitectureSummary() {
-  const kpi = document.getElementById('arch-kpi');
-  if (!kpi) return;
-  try {
-    const stats = await apiFetch('/api/estatisticas');
-    if (!stats || !stats.ok) return;
-    kpi.innerHTML = `
-      <div><b>${stats.total_setores}</b><span>setores monitorados</span></div>
-      <div><b>${(stats.tensao_media/1000).toFixed(1)} kV</b><span>tensão média</span></div>
-      <div><b>${stats.setores_falha}</b><span>falhas</span></div>
-      <div><b>${stats.sensor_mode}</b><span>modo sensor</span></div>`;
-  } catch (e) {}
-}
-
-// ── ZONE LIST ─────────────────────────────────────────────────────────────────
-function renderZoneList() {
-  const el = document.getElementById('zone-list');
-  el.innerHTML = '';
-  zones.forEach(z => {
-    const d = document.createElement('div');
-    const disconnected = isZoneDisconnected(z.id);
-    d.className = 'zone-row' + (selectedZone === z.id ? ' sel' : '') + (disconnected ? ' disconnected' : '');
-    const statusLabel = disconnected ? 'cerca não conectada' : (z.status === 'fault' ? 'falha' : z.status === 'critical' ? 'crítico' : z.status === 'on' ? 'on' : 'off');
-    const statusTxtColor = disconnected ? '#92400E' : (statusTextColor[z.status] || '#A32D2D');
-    const statusBackground = disconnected ? 'rgba(245,158,11,.20)' : (statusBg[z.status] || statusBg.fault);
-    d.innerHTML = `
-      <div style="width:9px;height:9px;border-radius:50%;background:${statusColors[z.status] || statusColors.fault};flex-shrink:0"></div>
-      <span style="font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(z.name)}</span>
-      <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:${statusBackground};color:${statusTxtColor};font-weight:500;flex-shrink:0">${statusLabel}</span>
-    `;
-    d.onclick = () => selectZone(z.id);
-    el.appendChild(d);
-  });
-  updateStats();
-}
-
-// ── LAYOUTS ───────────────────────────────────────────────────────────────────
-const layouts = [
-  { id:0, name:"Perímetro fazenda — layout A", active:true,  updated:"Hoje, 09:14" },
-  { id:1, name:"Pasto norte",                  active:false, updated:"Ontem" },
-  { id:2, name:"Pastagem sul",                 active:false, updated:"3 dias atrás" },
-  { id:3, name:"Pátio de armazenagem",         active:false, updated:"1 semana atrás" },
-];
-
-function renderLayoutList() {
-  const el = document.getElementById('layout-list');
-  el.innerHTML = '';
-  document.getElementById('layout-count').textContent = layouts.length + ' layouts na sua conta';
-  layouts.forEach(l => {
-    const d = document.createElement('div');
-    d.className = 'layout-card' + (l.active ? ' active-layout' : '');
-    d.innerHTML = `<div class="lc-name">${l.name}</div><div class="lc-meta">${zones.length} zonas · ${l.updated}${l.active ? ' · <strong>Ativo</strong>' : ''}</div>`;
-    d.onclick = () => { layouts.forEach(x => x.active = false); l.active = true; renderLayoutList(); document.getElementById('map-title').textContent = l.name; };
-    el.appendChild(d);
-  });
-}
-
-// ── VOLTAGE LIST ──────────────────────────────────────────────────────────────
-function renderVoltageList() {
-  const el = document.getElementById('voltage-list');
-  el.innerHTML = '';
-
-  const gw = document.createElement('div');
-  gw.style.cssText = 'margin-bottom:12px;padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)';
-  gw.innerHTML = `<div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px"><i class="ti ti-circles-relation" style="font-size:13px;margin-right:4px"></i>Definir todas as zonas</div><div style="display:flex;gap:5px"><button class="v-preset" onclick="setAllVoltage(2)">2 kV</button><button class="v-preset" onclick="setAllVoltage(6)">6 kV</button><button class="v-preset" onclick="setAllVoltage(7)">7 kV</button><button class="v-preset" onclick="setAllVoltage(8)">8 kV</button></div>`;
-  el.appendChild(gw);
-
-  zones.forEach(z => {
-    const card = document.createElement('div');
-    card.className = 'v-zone-card' + (selectedVoltZ === z.id ? ' v-sel' : '');
-    const warn = z.defeito
-      ? `<div class="v-warn" style="border-color:#F09595;background:#FCEBEB;color:#A32D2D"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:3px"></i>Fios/trecho com defeito: use manutenção.</div>`
-      : (z.voltage >= 7 ? `<div class="v-warn"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:3px"></i>Alta tensão — garanta que o perímetro de segurança está livre</div>` : '');
-    card.style.borderColor = voltColor(z.voltage);
-    card.innerHTML = `
-      <div class="v-zone-header" onclick="selVolt('${z.id}')">
-        <div style="width:8px;height:8px;border-radius:50%;background:${voltColor(z.voltage)};flex-shrink:0"></div>
-        <span class="v-zone-name">${esc(z.name)}</span>
-        <span class="v-badge" style="${voltBadgeStyle(z.voltage)}">${z.voltage} kV</span>
-      </div>
-      <div class="v-slider-wrap">
-        <span style="font-size:10px;color:var(--color-text-tertiary)">0</span>
-        <input type="range" min="0" max="8" step="1" value="${z.voltage}" id="vslider-${z.id}" ${z.defeito ? 'disabled' : ''}
-          oninput="updateVolt('${z.id}',+this.value)"
-          style="flex:1;accent-color:${voltColor(z.voltage)}">
-        <span style="font-size:10px;color:var(--color-text-tertiary)">8</span>
-        <span class="v-val" id="vval-${z.id}" style="color:${voltColor(z.voltage)}">${z.voltage} kV</span>
-      </div>
-      <div class="v-limits" style="padding-left:14px;padding-right:52px"><span>Baixa</span><span>Média</span><span>Alta</span><span>Máx</span></div>
-      <div class="v-preset-row">
-        <button class="v-preset" onclick="updateVolt('${z.id}',2);syncSlider('${z.id}')">2</button>
-        <button class="v-preset" onclick="updateVolt('${z.id}',4);syncSlider('${z.id}')">4</button>
-        <button class="v-preset" onclick="updateVolt('${z.id}',6);syncSlider('${z.id}')">6</button>
-        <button class="v-preset" onclick="updateVolt('${z.id}',8);syncSlider('${z.id}')">8</button>
-
-      </div>
-      <div id="vwarn-${z.id}">${warn}</div>`;
-    el.appendChild(card);
-  });
-}
-
-function selVolt(id) { selectedVoltZ = selectedVoltZ === id ? null : id; renderVoltageList(); }
-const voltageTimers = new Map();
-
-function updateVolt(id, val) {
-  const z = zones.find(z => z.id == id); if (!z) return;
-  const setorComDefeito = !!z.defeito;
-
-  // Potência não conserta fio/trecho em falha: mantém visual e backend em falha.
-  if (!setorComDefeito) {
-    z.voltage = val;
-    z.tensaoV = val * 1000;
-    z.ligado = val > 0;
-    z.status = val > 0 ? (val < 4 ? 'critical' : 'on') : 'off';
-  }
-
-  const displayVal = setorComDefeito ? '0 kV' : val + ' kV';
-  const vval  = document.getElementById('vval-' + id);
-  const sl    = document.getElementById('vslider-' + id);
-  const warn  = document.getElementById('vwarn-' + id);
-  const card  = sl && sl.closest('.v-zone-card');
-  const badge = card && card.querySelector('.v-badge');
-
-  if (vval)  { vval.textContent = displayVal; vval.style.color = setorComDefeito ? '#E24B4A' : voltColor(val); }
-  if (sl)    sl.style.accentColor = setorComDefeito ? '#E24B4A' : voltColor(val);
-  if (badge) { badge.textContent = setorComDefeito ? 'falha' : val + ' kV'; badge.style.cssText = setorComDefeito ? 'background:#FCEBEB;color:#A32D2D' : voltBadgeStyle(val); }
-  if (warn)  warn.innerHTML = setorComDefeito
-    ? `<div class="v-warn" style="border-color:#F09595;background:#FCEBEB;color:#A32D2D"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:3px"></i>Fios/trecho com defeito: potência não corrige. Use manutenção.</div>`
-    : (val >= 7 ? `<div class="v-warn"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:3px"></i>Alta tensão — garanta que o perímetro de segurança está livre</div>` : '');
-
-  if (typeof z.id === 'string') {
-    clearTimeout(voltageTimers.get(z.id));
-    voltageTimers.set(z.id, setTimeout(() => {
-      apiPost('/api/tensao', { id: z.id, tensao: val * 1000 })
-        .then(() => syncFromBackend())
-        .catch(err => {
-          console.warn('Falha ao atualizar tensão:', err);
-          document.getElementById('tb-hint').textContent = err.message || 'Falha ao atualizar tensão';
-        });
-    }, 350));
-  }
-  updateDisconnectedDiagnostics();
-  renderZoneList();
-  renderMap();
-}
-function syncSlider(id) { const sl = document.getElementById('vslider-' + id); const z = zones.find(z => z.id == id); if (sl && z) sl.value = z.voltage; }
-async function setAllVoltage(val) {
-  for (const z of zones) {
-    if (!z.defeito) z.voltage = val;
-    if (typeof z.id === 'string') {
-      await apiPost('/api/tensao', { id: z.id, tensao: val * 1000 }).catch(() => {});
+      if (typeof z.id === 'string') await apiPost('/api/controle', { id: z.id, acao: 'manutencao' }).catch(() => {});
+      else { z.defeito = false; z.fault = null; z.ligado = true; z.status = 'on'; z.voltage = Math.max(z.voltage || 5, 5); }
     }
   }
   await syncFromBackend();
-  renderVoltageList();
-  renderZoneList();
-  renderMap();
+  document.getElementById('tb-hint').textContent = 'Manutenção geral concluída';
 }
 
-// ── BATTERY LIST ──────────────────────────────────────────────────────────────
-function renderBattList() {
-  const el = document.getElementById('batt-list');
-  el.innerHTML = '';
-  zones.forEach(z => {
-    const c = battColor(z.battery);
-    const d = document.createElement('div');
-    d.className = 'batt-item';
-    let detail = '';
-    if (selectedBatt === z.id) detail = `<div class="batt-detail">
-      <div class="bd-row"><span class="bd-label">Carga</span><span class="bd-val" style="color:${c}">${z.battery}%</span></div>
-      <div class="bd-row"><span class="bd-label">Tensão</span><span class="bd-val">${z.voltage} kV saída</span></div>
-      <div class="bd-row"><span class="bd-label">Temp</span><span class="bd-val">${z.temp}</span></div>
-      <div class="bd-row"><span class="bd-label">Status</span><span class="bd-val">${z.defeito ? '⚠ Verificar' : z.health}</span></div>
-    </div>`;
-    d.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1">${esc(z.name)}</span>
-        <span style="font-size:12px;font-weight:500;color:${c}">${z.battery}%</span>
-      </div>
-      <div class="batt-bar-wrap"><div class="batt-bar" style="width:${z.battery}%;background:${c}"></div></div>
-      ${detail}`;
-    d.onclick = () => { selectedBatt = selectedBatt === z.id ? null : z.id; renderBattList(); };
-    el.appendChild(d);
-  });
-}
 
-// ── SELECT ZONE ───────────────────────────────────────────────────────────────
-function selectZone(id) {
-  selectedZone = id;
-  const z = zones.find(z => z.id === id); if (!z) return;
-  const disconnected = isZoneDisconnected(id);
-  document.getElementById('zone-ctrl-name').textContent = disconnected ? z.name + ' — cerca não conectada' : z.name;
-  document.getElementById('zone-ctrl-name').style.color = disconnected ? '#FCD34D' : 'var(--color-text-primary)';
-
-  // highlight botões de controle
-  ['on','off','fault','maint'].forEach(s => {
-    document.getElementById('zb-' + s).className = 'zc-btn';
-  });
-  if (z.status === 'on')    document.getElementById('zb-on').className    = 'zc-btn z-on';
-  if (z.status === 'off')   document.getElementById('zb-off').className   = 'zc-btn z-off';
-  if (z.status === 'fault') document.getElementById('zb-fault').className = 'zc-btn z-fault';
-  if (z.defeito)            document.getElementById('zb-maint').className = 'zc-btn z-maint';
-
-  updateToolbar();
-  renderZoneList();
-  renderMap();
-}
-
-function updateStats() {
-  const disconnectedCount = disconnectedZones.length;
-  document.getElementById('cnt-on').textContent    = zones.filter(z => z.status === 'on').length + ' on';
-  document.getElementById('cnt-off').textContent   = zones.filter(z => z.status === 'off').length + ' off';
-  const criticalCount = zones.filter(z => z.status === 'critical').length;
-  document.getElementById('cnt-fault').textContent = zones.filter(z => z.status === 'fault').length + ' falha' + (criticalCount ? ' · ' + criticalCount + ' crítico' : '') + (disconnectedCount ? ' · ' + disconnectedCount + ' descon.' : '');
-  const userLabel = currentUser ? ' · operador: ' + currentUser : '';
-  document.getElementById('map-subtitle').textContent = zones.length + ' zonas · ' + (disconnectedCount ? disconnectedCount + ' cerca(s) não conectada(s)' : 'todas conectadas') + ' · atualizado agora' + userLabel;
-  // also keep status-bar chip in sync
-  if (currentUser) document.getElementById('sb-username').textContent = currentUser;
-}
-
-// ── MAP ───────────────────────────────────────────────────────────────────────
-const svg = document.getElementById('map-svg');
-
-function getSVGPoint(e) {
-  const r = svg.getBoundingClientRect();
-  const cx = e.touches ? e.touches[0].clientX : e.clientX;
-  const cy = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: Math.round(cx - r.left), y: Math.round(cy - r.top) };
-}
-
-// Conecta um novo ponto automaticamente ao trecho/linha mais próximo.
-// Se clicar sobre uma linha existente A-B, ela vira A-NOVO-B.
-// Se não houver trecho próximo, conecta aos dois pontos mais próximos.
-function distPointToSegment(p, a, b) {
-  const vx = b.x - a.x, vy = b.y - a.y;
-  const wx = p.x - a.x, wy = p.y - a.y;
-  const len2 = vx * vx + vy * vy;
-  if (len2 === 0) return { dist: Math.hypot(p.x - a.x, p.y - a.y), t: 0 };
-  let t = (wx * vx + wy * vy) / len2;
-  t = Math.max(0, Math.min(1, t));
-  const px = a.x + t * vx, py = a.y + t * vy;
-  return { dist: Math.hypot(p.x - px, p.y - py), t };
-}
-
-function autoConnectNewZone(newId, point) {
-  if (!zones.length) return;
-
-  let best = null;
-  edges.forEach(([a, b], idx) => {
-    const za = zones.find(z => z.id == a);
-    const zb = zones.find(z => z.id == b);
-    if (!za || !zb) return;
-    const hit = distPointToSegment(point, za, zb);
-    if (!best || hit.dist < best.dist) best = { ...hit, a, b, idx };
-  });
-
-  // Se o ponto caiu perto de uma linha, quebra o trecho e insere o novo nó no meio.
-  if (best && best.dist <= 55) {
-    edges.splice(best.idx, 1, [best.a, newId], [newId, best.b]);
-    return;
-  }
-
-  // Caso contrário, conecta nos dois nós mais próximos para não ficar solto.
-  const nearest = zones
-    .filter(z => z.id != newId)
-    .map(z => ({ id: z.id, d: Math.hypot(z.x - point.x, z.y - point.y) }))
-    .sort((a, b) => a.d - b.d)
-    .slice(0, 2);
-
-  nearest.forEach(n => {
-    if (!edges.some(([a, b]) => (a == n.id && b == newId) || (a == newId && b == n.id))) {
-      edges.push([n.id, newId]);
-    }
-  });
-}
-
-function edgeExists(a, b) {
-  return edges.some(([x, y]) => (x == a && y == b) || (x == b && y == a));
-}
-
-function addEdgeSafe(a, b) {
-  if (a == null || b == null || a == b) return false;
-  if (edgeExists(a, b)) return false;
-  const za = zones.find(z => z.id == a);
-  const zb = zones.find(z => z.id == b);
-  if (!za || !zb) return false;
-  edges.push([a, b]);
-  return true;
-}
-
-function cancelConnectMode(render = true) {
-  connectMode = false;
-  connectStart = null;
-  connectPreview = null;
-  const btn = document.getElementById('tb-connect');
-  if (btn) {
-    btn.classList.remove('tb-active');
-    btn.innerHTML = '<i class="ti ti-route" style="font-size:14px"></i> Ligar pontos';
-  }
-  svg.classList.remove('connect-mode');
-  document.getElementById('tb-hint').textContent = 'Editor do mapa';
-  if (render) renderMap();
-}
-
-function cancelRemoveLineMode(render = true) {
-  removeLineMode = false;
-  const btn = document.getElementById('tb-remove-line');
-  if (btn) {
-    btn.classList.remove('tb-active');
-    btn.innerHTML = '<i class="ti ti-cut" style="font-size:14px"></i> Remover linha';
-  }
-  svg.classList.remove('remove-line-mode');
-  document.getElementById('tb-hint').textContent = 'Editor do mapa';
-  if (render) renderMap();
-}
-
-function toggleConnectMode() {
-  // Clicar novamente desliga o modo.
-  if (connectMode) {
-    cancelConnectMode();
-    return;
-  }
-
-  // Evita conflito entre modos.
-  if (addMode) toggleAddMode();
-  if (removeLineMode) cancelRemoveLineMode(false);
-
-  connectMode = true;
-  connectStart = null;
-  connectPreview = null;
-
-  const btn = document.getElementById('tb-connect');
-  btn.classList.add('tb-active');
-  btn.innerHTML = '<i class="ti ti-x" style="font-size:14px"></i> Parar ligação';
-  svg.classList.add('connect-mode');
-  document.getElementById('tb-hint').textContent = 'Clique em um ponto e depois em outro para criar uma linha';
-  renderMap();
-}
-
-function toggleRemoveLineMode() {
-  // Clicar novamente desliga o modo.
-  if (removeLineMode) {
-    cancelRemoveLineMode();
-    return;
-  }
-
-  if (addMode) toggleAddMode();
-  if (connectMode) cancelConnectMode(false);
-
-  removeLineMode = true;
-  const btn = document.getElementById('tb-remove-line');
-  btn.classList.add('tb-active');
-  btn.innerHTML = '<i class="ti ti-x" style="font-size:14px"></i> Parar remoção';
-  svg.classList.add('remove-line-mode');
-  document.getElementById('tb-hint').textContent = 'Clique em uma linha da cerca para remover';
-  renderMap();
-}
-
-function removeEdgeAt(index) {
-  if (index < 0 || index >= edges.length) return;
-  edges.splice(index, 1);
-  updateDisconnectedDiagnostics();
-  document.getElementById('tb-hint').textContent = 'Linha removida';
-  renderAll();
-}
-
-function handleConnectClick(id) {
-  if (!connectMode) return false;
-
-  if (connectStart === null) {
-    connectStart = id;
-    selectedZone = id;
-    document.getElementById('tb-hint').textContent = 'Agora clique no ponto de destino';
-    renderZoneList();
-    renderMap();
-    return true;
-  }
-
-  if (connectStart === id) {
-    document.getElementById('tb-hint').textContent = 'Escolha um ponto diferente para ligar';
-    return true;
-  }
-
-  const ok = addEdgeSafe(connectStart, id);
-  document.getElementById('tb-hint').textContent = ok ? 'Linha criada entre os pontos' : 'Esses pontos já estão ligados';
-  connectStart = null;
-  connectPreview = null;
-  cancelConnectMode();
-  renderAll();
-  return true;
-}
-
-function renderMap() {
-  const W = svg.clientWidth  || 500;
-  const H = svg.clientHeight || 400;
-  const showV = showVoltOnMap();
-  let h = '';
-
-  // Fundo estilo quadro/SCADA escuro
-  h += `<rect x="0" y="0" width="${W}" height="${H}" fill="#0f172a"/>`;
-  h += `<defs>
-    <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="#1f2937" stroke-width="0.6" opacity="0.35"/></pattern>
-  </defs>`;
-  h += `<rect x="0" y="0" width="${W}" height="${H}" fill="url(#grid)"/>`;
-
-  // Header dentro do mapa, inspirado na lousa
-  const onCount = zones.filter(z => z.status === 'on').length;
-  const offCount = zones.filter(z => z.status === 'off').length;
-  const faultCount = zones.filter(z => z.status === 'fault').length;
-  const criticalCount = zones.filter(z => z.status === 'critical').length;
-  const disconnectedCount = disconnectedZones.length;
-  h += `<text x="24" y="28" fill="#f9fafb" font-size="14" font-family="var(--font-sans)" font-weight="600">FENCE GUARD ENTERPRISE</text>`;
-  h += `<text x="24" y="47" fill="#9ca3af" font-size="10" font-family="var(--font-sans)">perímetro inteligente · electric fence inter-phase</text>`;
-  h += `<g transform="translate(${Math.max(W - 250, 260)},18)">
-    <rect x="0" y="0" width="56" height="24" rx="12" fill="rgba(29,158,117,.14)" stroke="#1D9E75"/><text x="28" y="16" text-anchor="middle" fill="#5DCAA5" font-size="11" font-family="var(--font-sans)" font-weight="600">${onCount} ON</text>
-    <rect x="64" y="0" width="58" height="24" rx="12" fill="rgba(180,178,169,.12)" stroke="#4b5563"/><text x="93" y="16" text-anchor="middle" fill="#d1d5db" font-size="11" font-family="var(--font-sans)" font-weight="600">${offCount} OFF</text>
-    <rect x="130" y="0" width="82" height="24" rx="12" fill="rgba(226,75,74,.13)" stroke="#E24B4A"/><text x="171" y="16" text-anchor="middle" fill="#F09595" font-size="11" font-family="var(--font-sans)" font-weight="600">${faultCount} FALHA</text>
-    <text x="0" y="42" fill="#FCD34D" font-size="10" font-family="var(--font-sans)">${criticalCount ? criticalCount + ' crítico(s)' : ''}</text>
-  </g>`;
-  if (disconnectedCount > 0) {
-    h += `<rect x="24" y="58" width="240" height="22" rx="8" fill="rgba(245,158,11,.12)" stroke="#F59E0B"/><text x="34" y="73" fill="#FCD34D" font-size="10.5" font-family="var(--font-sans)" font-weight="600">⚠ ${disconnectedCount} cerca(s) não conectada(s)</text>`;
-  }
-
-  // Área do campo
-  const fieldX = 50, fieldY = disconnectedCount > 0 ? 92 : 72, fieldW = Math.max(W - 100, 420), fieldH = Math.max(H - (disconnectedCount > 0 ? 190 : 170), 260);
-  h += `<rect x="${fieldX}" y="${fieldY}" width="${fieldW}" height="${fieldH}" rx="18" fill="rgba(2,6,23,.55)" stroke="#273244" stroke-width="1"/>`;
-
-  // Clamp all zone positions inside the field so nodes never escape the map
-  const nodePad = 20;
-  const minX = fieldX + nodePad, maxX = fieldX + fieldW - nodePad;
-  const minY = fieldY + nodePad, maxY = fieldY + fieldH - nodePad;
-  zones.forEach(z => {
-    z.x = Math.max(minX, Math.min(maxX, z.x));
-    z.y = Math.max(minY, Math.min(maxY, z.y));
-    posMap[z.id] = { x: z.x, y: z.y };
-  });
-
-  // Linhas da cerca entre setores reais
-  edges.forEach(([a, b]) => {
-    const za = zones.find(z => z.id === a);
-    const zb = zones.find(z => z.id === b);
-    if (!za || !zb) return;
-    const s = edgeVoltageColor(za, zb);
-    const dash = (za.status === 'off' || zb.status === 'off' || !za.ligado || !zb.ligado) ? "stroke-dasharray='8 6'" : '';
-    const edgeIdx = edges.findIndex(([x,y]) => (x == a && y == b) || (x == b && y == a));
-    h += `<g data-edge-idx="${edgeIdx}" style="cursor:${removeLineMode ? 'not-allowed' : 'default'}">`;
-    h += `<line x1="${za.x}" y1="${za.y}" x2="${zb.x}" y2="${zb.y}" stroke="transparent" stroke-width="22"/>`;
-    h += `<line x1="${za.x}" y1="${za.y}" x2="${zb.x}" y2="${zb.y}" stroke="#0b1220" stroke-width="8" opacity="0.55"/>`;
-    h += `<line x1="${za.x}" y1="${za.y}" x2="${zb.x}" y2="${zb.y}" stroke="${removeLineMode ? '#F59E0B' : s}" stroke-width="${removeLineMode ? 4 : 3}" ${dash} opacity="0.95" filter="url(#glow)"/>`;
-    // fio duplo da cerca
-    h += `<line x1="${za.x}" y1="${za.y+8}" x2="${zb.x}" y2="${zb.y+8}" stroke="${removeLineMode ? '#F59E0B' : s}" stroke-width="1.2" ${dash} opacity="0.45"/>`;
-    if (showV && !removeLineMode) {
-      const mv = Math.min(za.voltage || 0, zb.voltage || 0);
-      const mx = (za.x + zb.x) / 2, my = (za.y + zb.y) / 2;
-      h += `<rect x="${mx-18}" y="${my-10}" width="36" height="18" rx="6" fill="#0b1220" stroke="${s}" stroke-width="0.8" opacity="0.92"/>`;
-      h += `<text x="${mx}" y="${my+3}" text-anchor="middle" font-size="9" fill="${s}" font-family="var(--font-sans)" font-weight="700">${mv}kV</text>`;
-    }
-    h += `</g>`;
-
-    // postes pequenos no meio do trecho
-    for (let i=1; i<5; i++) {
-      const t = i/5;
-      const px = za.x + (zb.x - za.x) * t;
-      const py = za.y + (zb.y - za.y) * t;
-      h += `<rect x="${px-5}" y="${py-7}" width="10" height="14" rx="3" fill="#111827" stroke="${s}" stroke-width="1.2" transform="rotate(${Math.atan2(zb.y-za.y, zb.x-za.x)*180/Math.PI} ${px} ${py})"/>`;
-    }
-  });
-
-  // Animais dentro do perímetro, como no sketch
-  const animals = [
-    {x: fieldX + fieldW*.42, y: fieldY + fieldH*.38, icon:'🐄'},
-    {x: fieldX + fieldW*.68, y: fieldY + fieldH*.60, icon:'🐂'},
-    {x: fieldX + fieldW*.73, y: fieldY + fieldH*.25, icon:'🐐'}
-  ];
-  animals.forEach(a => h += `<text x="${a.x}" y="${a.y}" text-anchor="middle" font-size="28" opacity="0.82">${a.icon}</text>`);
-
-  // Métricas movidas para o painel Fence Guard inferior
-
-  // Nós/setores clicáveis
-  zones.forEach(z => {
-    const sel = selectedZone === z.id;
-    const disconnected = isZoneDisconnected(z.id);
-    const c   = disconnected ? '#F59E0B' : statusColors[z.status];
-    const bg2 = disconnected ? 'rgba(245,158,11,.16)' : (z.status === 'on' ? 'rgba(29,158,117,.14)' : z.status === 'off' ? 'rgba(156,163,175,.14)' : z.status === 'critical' ? 'rgba(239,159,39,.16)' : 'rgba(226,75,74,.16)');
-    const ringColor = disconnected ? '#F59E0B' : (showV ? voltColor(z.voltage) : c);
-
-    h += `<g data-zid="${z.id}" style="cursor:pointer">`;
-    if (sel) h += `<circle cx="${z.x}" cy="${z.y}" r="28" fill="${c}" opacity="0.16"/>`;
-    h += `<rect x="${z.x-10}" y="${z.y-13}" width="20" height="26" rx="5" fill="#111827" stroke="${ringColor}" stroke-width="${sel ? 2.5 : 1.6}"/>`;
-    h += `<circle cx="${z.x}" cy="${z.y}" r="5" fill="${c}"/>`;
-    h += `<circle cx="${z.x}" cy="${z.y}" r="12" fill="${bg2}" stroke="${c}" stroke-width="1" opacity="0.85"/>`;
-    if (showV) h += `<text x="${z.x}" y="${z.y - 23}" text-anchor="middle" font-size="10" fill="${voltColor(z.voltage)}" font-family="var(--font-sans)" font-weight="600">${z.voltage}kV</text>`;
-    const label = z.name.length > 15 ? z.name.slice(0,14) + '…' : z.name;
-    h += `<text x="${z.x}" y="${z.y + 31}" text-anchor="middle" font-size="10" fill="#9ca3af" font-family="var(--font-sans)" font-weight="500">${label}</text>`;
-    if (disconnected) {
-      h += `<rect x="${z.x - 58}" y="${z.y + 38}" width="116" height="18" rx="6" fill="rgba(245,158,11,.16)" stroke="#F59E0B" stroke-width="0.8"/>`;
-      h += `<text x="${z.x}" y="${z.y + 51}" text-anchor="middle" font-size="9" fill="#FCD34D" font-family="var(--font-sans)" font-weight="700">cerca não conectada</text>`;
-    }
-
-    // Balão de problema no trecho/setor em falha
-    if (z.status === 'fault') {
-      const fi  = z.fault ?? 0;
-      const fw = 164, fh = 62;
-      const px = z.x + 26, py = z.y - 46;
-      const cx2 = Math.min(px, W - fw - 12);
-      const cy2 = Math.max(py, 58);
-      h += `<g filter="url(#glow)">`;
-      h += `<rect x="${cx2}" y="${cy2}" width="${fw}" height="${fh}" rx="8" fill="rgba(127,29,29,.92)" stroke="#E24B4A" stroke-width="1.2"/>`;
-      h += `<line x1="${z.x+12}" y1="${z.y}" x2="${cx2}" y2="${cy2+fh/2}" stroke="#E24B4A" stroke-width="1.3" stroke-dasharray="4 3"/>`;
-      h += `<text x="${cx2+12}" y="${cy2+19}" font-size="13" font-family="var(--font-sans)" font-weight="800" fill="#fecaca">PROBLEM</text>`;
-      h += `<text x="${cx2+12}" y="${cy2+38}" font-size="10" font-family="var(--font-sans)" fill="#fecaca">${FAULT_TYPES[fi]}</text>`;
-      h += `<text x="${cx2+12}" y="${cy2+52}" font-size="9" font-family="var(--font-sans)" fill="#fca5a5">manutenção necessária</text>`;
-      h += `</g>`;
-    }
-    h += `</g>`;
-  });
-
-  // Unidade energizadora / Fence Guard na parte inferior, como no desenho
-  const unitW = 150, unitH = 86;
-  const unitX = Math.max(18, W/2 - unitW/2);
-  const unitY = Math.max(H - unitH - 26, fieldY + fieldH + 14);
-  h += `<g>
-    <line x1="40" y1="${unitY+28}" x2="${unitX}" y2="${unitY+28}" stroke="#64748b" stroke-width="3" opacity=".5"/>
-    <line x1="${unitX+unitW}" y1="${unitY+28}" x2="${W-40}" y2="${unitY+28}" stroke="#64748b" stroke-width="3" opacity=".5"/>
-    <line x1="40" y1="${unitY+58}" x2="${unitX}" y2="${unitY+58}" stroke="#64748b" stroke-width="2" opacity=".35"/>
-    <line x1="${unitX+unitW}" y1="${unitY+58}" x2="${W-40}" y2="${unitY+58}" stroke="#64748b" stroke-width="2" opacity=".35"/>
-    <rect x="${unitX}" y="${unitY}" width="${unitW}" height="${unitH}" rx="16" fill="#111827" stroke="#374151" stroke-width="1.2"/>
-    <rect x="${unitX+18}" y="${unitY+14}" width="${unitW-36}" height="${unitH-28}" rx="10" fill="#0b1220" stroke="#273244"/>
-    <text x="${unitX+unitW/2}" y="${unitY+32}" text-anchor="middle" fill="#f9fafb" font-size="13" font-family="var(--font-sans)" font-weight="700">FENCE GUARD</text>
-    <circle cx="${unitX+unitW/2}" cy="${unitY+46}" r="4" fill="${faultCount ? '#E24B4A' : '#1D9E75'}" filter="url(#glow)"/>
-    <text x="${unitX+unitW/2}" y="${unitY+66}" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="var(--font-sans)">${faultCount ? 'falha ativa' : 'online'} · ${zones.length} setores</text>
-  </g>`;
-
-  svg.innerHTML = h;
-
-  svg.querySelectorAll('[data-zid]').forEach(el => {
-    el.addEventListener('mousedown', e => {
-      if (addMode || connectMode || removeLineMode) return;
-      const id = el.dataset.zid;
-      const zid = isNaN(id) ? id : +id;
-      const z = zones.find(z => z.id == zid);
-      if (!z) return;
-      drag = { id: zid, ox: z.x, oy: z.y, sx: e.clientX, sy: e.clientY };
-      selectZone(zid);
-      e.stopPropagation(); e.preventDefault();
-    });
-    el.addEventListener('click', e => {
-      if (addMode || removeLineMode) return;
-      const id = el.dataset.zid;
-      const zid = isNaN(id) ? id : +id;
-      if (handleConnectClick(zid)) { e.stopPropagation(); return; }
-      selectZone(zid);
-      e.stopPropagation();
-    });
-  });
-
-  svg.querySelectorAll('[data-edge-idx]').forEach(el => {
-    el.addEventListener('click', e => {
-      if (!removeLineMode) return;
-      const idx = Number(el.dataset.edgeIdx);
-      removeEdgeAt(idx);
-      e.stopPropagation();
-    });
-  });
-
-  svg.onclick = async e => {
-    if (connectMode || removeLineMode) return;
-    if (!addMode) return;
-    const p = getSVGPoint(e);
-    const nome = 'Zona ' + nextId++;
-
-    // Preferência: cria setor real no backend Flask.
-    // Assim o ponto não some no próximo /api/sensores.
-    try {
-      const res = await apiPost('/api/adicionar', { nome });
-      if (res && res.ok && res.setor && res.setor.id) {
-        posMap[res.setor.id] = { x: p.x, y: p.y };
-        toggleAddMode();
-        await syncFromBackend();
-        autoConnectNewZone(res.setor.id, p);
-        selectZone(res.setor.id);
-        renderAll();
-        return;
-      }
-    } catch (err) {
-      console.warn('Falha ao criar no backend, criando ponto local temporário.', err);
-    }
-
-    // Fallback: ponto local temporário caso o backend não esteja disponível.
-    const newId = nextId++;
-    const newZone = {
-      id: newId, name: nome,
-      status: 'off', defeito: false, ligado: false,
-      voltage: 5, tensaoV: 0,
-      battery: 100, temp: '22°C', health: 'Nova', fault: null,
-      base: false, x: p.x, y: p.y,
-    };
-    zones.push(newZone);
-    posMap[newId] = { x: p.x, y: p.y };
-    autoConnectNewZone(newId, p);
-    toggleAddMode();
-    selectZone(newId);
-    renderAll();
-  };
-}
-
-// ── DRAG ──────────────────────────────────────────────────────────────────────
-window.addEventListener('mousemove', e => {
-  if (!drag) return;
-  const z = zones.find(z => z.id == drag.id);
-  if (z) {
-    const svg = document.getElementById('map-svg');
-    const W = svg.clientWidth || 500;
-    const H = svg.clientHeight || 400;
-    const pad = 24;
-    z.x = Math.max(pad, Math.min(W - pad, drag.ox + (e.clientX - drag.sx)));
-    z.y = Math.max(pad, Math.min(H - pad, drag.oy + (e.clientY - drag.sy)));
-    posMap[z.id] = { x: z.x, y: z.y };
-  }
-  renderMap();
-});
-window.addEventListener('mouseup', () => { drag = null; });
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    if (connectMode) cancelConnectMode(false);
-    if (removeLineMode) cancelRemoveLineMode(false);
-    renderMap();
-  }
-});
-window.addEventListener('resize', renderMap);
-
-// ── ADD MODE ──────────────────────────────────────────────────────────────────
-function toggleAddMode() {
-  if (!addMode && connectMode) cancelConnectMode(false);
-  if (!addMode && removeLineMode) cancelRemoveLineMode(false);
-  addMode = !addMode;
-  const btn = document.getElementById('tb-add');
-  if (addMode) {
-    btn.classList.add('tb-active');
-    btn.innerHTML = '<i class="ti ti-x" style="font-size:14px"></i> Cancelar';
-    svg.classList.add('add-mode');
-    document.getElementById('tb-hint').textContent = 'Clique no mapa para criar um novo setor/ponto';
-    selectedZone = null; updateToolbar();
-  } else {
-    btn.classList.remove('tb-active');
-    btn.innerHTML = '<i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto';
-    svg.classList.remove('add-mode');
-    document.getElementById('tb-hint').textContent = 'Editor do mapa';
-  }
-  renderMap();
-}
-
-function updateToolbar() {
-  const remBtn  = document.getElementById('tb-remove');
-  const renWrap = document.getElementById('rename-wrap');
-  if (selectedZone !== null && !addMode) {
-    remBtn.style.display  = 'flex';
-    renWrap.style.display = 'flex';
-    const z = zones.find(z => z.id === selectedZone);
-    if (z) document.getElementById('rename-input').value = z.name;
-  } else {
-    remBtn.style.display  = 'none';
-    renWrap.style.display = 'none';
-  }
-}
-
-async function removeSelected() {
-  if (selectedZone === null) return;
-  const idToRemove = selectedZone;
-  const z = zones.find(z => z.id === idToRemove);
-  if (!z) return;
-
-  if (z.base) { alert('Setores base não podem ser removidos.'); return; }
-
-  if (typeof z.id === 'string') {
-    try {
-      const res = await apiPost('/api/remover', { id: z.id });
-      if (!res.ok) { alert(res.msg || 'Não foi possível remover.'); return; }
-    } catch (err) {
-      alert(err.message || 'Não foi possível remover.');
-      return;
-    }
-  }
-
-  edges = edges.filter(([a, b]) => a !== idToRemove && b !== idToRemove);
-  zones = zones.filter(z => z.id !== idToRemove);
-  selectedZone = null;
-  document.getElementById('zone-ctrl-name').textContent = 'Selecione uma zona';
-  document.getElementById('zone-ctrl-name').style.color = 'var(--color-text-secondary)';
-  updateToolbar();
-  renderAll();
-}
-async function applyRename() {
-  if (selectedZone === null) return;
-  const input = document.getElementById('rename-input');
-  const val = input.value.trim();
-  if (!val) return;
-  const z = zones.find(z => z.id === selectedZone);
-  if (!z) return;
-  const oldName = z.name;
-
-  try {
-    if (typeof selectedZone === 'string') {
-      const res = await apiPost('/api/editar', { id: selectedZone, nome: val });
-      if (!res.ok) throw new Error(res.msg || 'Não foi possível renomear.');
-    }
-    z.name = val;
-    renderZoneList(); renderVoltageList(); renderBattList(); renderMap();
-    document.getElementById('zone-ctrl-name').textContent = val;
-  } catch (err) {
-    z.name = oldName;
-    alert(err.message || 'Não foi possível renomear.');
-  }
-}
-// ── RENDER ALL ────────────────────────────────────────────────────────────────
-function renderAll() {
-  updateDisconnectedDiagnostics();
-  renderZoneList();
-  renderLayoutList();
-  renderVoltageList();
-  renderBattList();
-  renderMap();
-  updateStats();
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-function esc(str) {
-  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-syncFromBackend();
-setInterval(syncFromBackend, POLL_MS);
-</script>
-</body>
-</html>
+// ═══════════════════════════════════════════════════════════════════════════
+// PAINÉIS / NAVEGAÇÃO
+// ══════════... (35 KB restante(s))
