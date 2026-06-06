@@ -374,6 +374,10 @@ body { padding-top: 28px; }
 .arch-kpi b{font-size:15px;color:var(--color-text-primary);display:block}
 .arch-kpi span{font-size:10px;color:var(--color-text-secondary)}
 
+.auth-chip{font-size:11px;color:#cbd5e1;border:0.5px solid #334155;border-radius:999px;padding:2px 8px;background:#0f172a}
+.logout-btn{font-family:monospace;font-size:11px;border:0.5px solid #4b5563;border-radius:6px;background:#111827;color:#f9fafb;padding:3px 8px;cursor:pointer}
+.logout-btn:hover{background:#1f2937;border-color:#9ca3af}
+
 </style>
 </head>
 <body>
@@ -385,6 +389,8 @@ body { padding-top: 28px; }
   <span class="s-yellow" id="sb-crit">— críticos</span>
   <span class="s-red" id="sb-fault">— falhas</span>
   <span style="flex:1"></span>
+  <span class="auth-chip">{{ usuario or 'operador' }}</span>
+  <button class="logout-btn" onclick="logout()">Sair</button>
   <span id="sb-clock">--:--:--</span>
 </div>
 
@@ -663,8 +669,9 @@ let connectPreview = null;
 let removeLineMode = false;
 let disconnectedZones = [];
 
-const statusColors = { on: "#1D9E75", off: "#888780", fault: "#E24B4A" };
-const statusBg     = { on: "#E1F5EE", off: "#F1EFE8", fault: "#FCEBEB" };
+const statusColors = { on: "#1D9E75", off: "#888780", critical: "#EF9F27", fault: "#E24B4A" };
+const statusBg     = { on: "#E1F5EE", off: "#F1EFE8", critical: "#FAEEDA", fault: "#FCEBEB" };
+const statusTextColor = { on: "#0F6E56", off: "#5F5E5A", critical: "#633806", fault: "#A32D2D" };
 const faultColors  = ["#BA7517","#A32D2D","#993556"];
 const faultBg      = ["#FAEEDA","#FCEBEB","#FBEAF0"];
 const faultBorder  = ["#FAC775","#F09595","#F4C0D1"];
@@ -699,8 +706,9 @@ function tensaoToKv(tensaoV) { return Math.round(tensaoV / 1000); }
 // Converte status backend → status UI
 function backendStatusToUI(s) {
   // s.status: "normal" | "critico" | "falha" | "desligado"
-  if (s.defeito)          return "fault";
-  if (!s.ligado)          return "off";
+  if (s.defeito || s.status === "falha") return "fault";
+  if (!s.ligado || s.status === "desligado") return "off";
+  if (s.status === "critico") return "critical";
   return "on";
 }
 
@@ -787,9 +795,22 @@ function updateDisconnectedDiagnostics() {
 }
 
 // ── API ───────────────────────────────────────────────────────────────────────
+async function parseApiResponse(r) {
+  let payload = null;
+  try { payload = await r.json(); } catch (_) {}
+  if (r.status === 401) {
+    window.location.href = '/login';
+    throw new Error(payload?.msg || 'Sessão expirada');
+  }
+  if (!r.ok) {
+    const msg = payload?.msg || payload?.error || `Erro HTTP ${r.status}`;
+    throw new Error(msg);
+  }
+  return payload || {};
+}
 async function apiFetch(url) {
   const r = await fetch(url);
-  return r.json();
+  return parseApiResponse(r);
 }
 async function apiPost(url, data) {
   const r = await fetch(url, {
@@ -797,7 +818,13 @@ async function apiPost(url, data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
-  return r.json();
+  return parseApiResponse(r);
+}
+
+async function logout() {
+  try { await apiPost('/logout', {}); }
+  catch (_) {}
+  window.location.href = '/login';
 }
 
 // ── SYNC com backend ──────────────────────────────────────────────────────────
@@ -869,7 +896,7 @@ async function syncFromBackend() {
   document.getElementById('sb-sync').textContent = 'Sync ' + now;
 
   const nOk    = zones.filter(z => z.status === 'on').length;
-  const nCrit  = data.alertas.filter(a => !a.defeito).length;
+  const nCrit  = zones.filter(z => z.status === 'critical').length;
   const nFault = zones.filter(z => z.defeito).length;
 
   document.getElementById('sb-normal').textContent = nOk   + ' normais';
@@ -982,11 +1009,11 @@ function renderZoneList() {
     const d = document.createElement('div');
     const disconnected = isZoneDisconnected(z.id);
     d.className = 'zone-row' + (selectedZone === z.id ? ' sel' : '') + (disconnected ? ' disconnected' : '');
-    const statusLabel = disconnected ? 'cerca não conectada' : (z.status === 'fault' ? 'falha' : z.status === 'on' ? 'on' : 'off');
-    const statusTxtColor = disconnected ? '#92400E' : (z.status === 'on' ? '#0F6E56' : z.status === 'off' ? '#5F5E5A' : '#A32D2D');
-    const statusBackground = disconnected ? 'rgba(245,158,11,.20)' : statusBg[z.status];
+    const statusLabel = disconnected ? 'cerca não conectada' : (z.status === 'fault' ? 'falha' : z.status === 'critical' ? 'crítico' : z.status === 'on' ? 'on' : 'off');
+    const statusTxtColor = disconnected ? '#92400E' : (statusTextColor[z.status] || '#A32D2D');
+    const statusBackground = disconnected ? 'rgba(245,158,11,.20)' : (statusBg[z.status] || statusBg.fault);
     d.innerHTML = `
-      <div style="width:9px;height:9px;border-radius:50%;background:${statusColors[z.status]};flex-shrink:0"></div>
+      <div style="width:9px;height:9px;border-radius:50%;background:${statusColors[z.status] || statusColors.fault};flex-shrink:0"></div>
       <span style="font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(z.name)}</span>
       <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:${statusBackground};color:${statusTxtColor};font-weight:500;flex-shrink:0">${statusLabel}</span>
     `;
@@ -1062,6 +1089,8 @@ function renderVoltageList() {
 }
 
 function selVolt(id) { selectedVoltZ = selectedVoltZ === id ? null : id; renderVoltageList(); }
+const voltageTimers = new Map();
+
 function updateVolt(id, val) {
   const z = zones.find(z => z.id == id); if (!z) return;
   const setorComDefeito = !!z.defeito;
@@ -1071,7 +1100,7 @@ function updateVolt(id, val) {
     z.voltage = val;
     z.tensaoV = val * 1000;
     z.ligado = val > 0;
-    z.status = val > 0 ? 'on' : 'off';
+    z.status = val > 0 ? (val < 4 ? 'critical' : 'on') : 'off';
   }
 
   const displayVal = setorComDefeito ? '0 kV' : val + ' kV';
@@ -1089,7 +1118,15 @@ function updateVolt(id, val) {
     : (val >= 7 ? `<div class="v-warn"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:3px"></i>Alta tensão — garanta que o perímetro de segurança está livre</div>` : '');
 
   if (typeof z.id === 'string') {
-    apiPost('/api/tensao', { id: z.id, tensao: val * 1000 }).then(() => syncFromBackend()).catch(() => {});
+    clearTimeout(voltageTimers.get(z.id));
+    voltageTimers.set(z.id, setTimeout(() => {
+      apiPost('/api/tensao', { id: z.id, tensao: val * 1000 })
+        .then(() => syncFromBackend())
+        .catch(err => {
+          console.warn('Falha ao atualizar tensão:', err);
+          document.getElementById('tb-hint').textContent = err.message || 'Falha ao atualizar tensão';
+        });
+    }, 350));
   }
   updateDisconnectedDiagnostics();
   renderZoneList();
@@ -1160,9 +1197,10 @@ function selectZone(id) {
 
 function updateStats() {
   const disconnectedCount = disconnectedZones.length;
-  document.getElementById('cnt-on').textContent    = zones.filter(z => z.status === 'on').length    + ' on';
-  document.getElementById('cnt-off').textContent   = zones.filter(z => z.status === 'off').length   + ' off';
-  document.getElementById('cnt-fault').textContent = zones.filter(z => z.status === 'fault').length + ' falha' + (disconnectedCount ? ' · ' + disconnectedCount + ' descon.' : '');
+  document.getElementById('cnt-on').textContent    = zones.filter(z => z.status === 'on').length + ' on';
+  document.getElementById('cnt-off').textContent   = zones.filter(z => z.status === 'off').length + ' off';
+  const criticalCount = zones.filter(z => z.status === 'critical').length;
+  document.getElementById('cnt-fault').textContent = zones.filter(z => z.status === 'fault').length + ' falha' + (criticalCount ? ' · ' + criticalCount + ' crítico' : '') + (disconnectedCount ? ' · ' + disconnectedCount + ' descon.' : '');
   document.getElementById('map-subtitle').textContent = zones.length + ' zonas · ' + (disconnectedCount ? disconnectedCount + ' cerca(s) não conectada(s)' : 'todas conectadas') + ' · atualizado agora';
 }
 
@@ -1263,26 +1301,6 @@ function cancelRemoveLineMode(render = true) {
 }
 
 function toggleConnectMode() {
-  connectMode = !connectMode;
-  connectStart = null;
-  connectPreview = null;
-
-  // Evita conflito entre adicionar ponto e ligar pontos.
-  if (connectMode && addMode) toggleAddMode();
-
-  const btn = document.getElementById('tb-connect');
-  if (connectMode) {
-    btn.classList.add('tb-active');
-    btn.innerHTML = '<i class="ti ti-x" style="font-size:14px"></i> Cancelar ligação';
-    svg.classList.add('connect-mode');
-    document.getElementById('tb-hint').textContent = 'Clique em dois pontos para criar uma linha';
-  } else {
-    cancelConnectMode();
-  }
-  renderMap();
-}
-
-function toggleConnectMode() {
   // Clicar novamente desliga o modo.
   if (connectMode) {
     cancelConnectMode();
@@ -1376,13 +1394,15 @@ function renderMap() {
   const onCount = zones.filter(z => z.status === 'on').length;
   const offCount = zones.filter(z => z.status === 'off').length;
   const faultCount = zones.filter(z => z.status === 'fault').length;
+  const criticalCount = zones.filter(z => z.status === 'critical').length;
   const disconnectedCount = disconnectedZones.length;
   h += `<text x="24" y="28" fill="#f9fafb" font-size="14" font-family="var(--font-sans)" font-weight="600">FENCE GUARD ENTERPRISE</text>`;
   h += `<text x="24" y="47" fill="#9ca3af" font-size="10" font-family="var(--font-sans)">perímetro inteligente · electric fence inter-phase</text>`;
   h += `<g transform="translate(${Math.max(W - 250, 260)},18)">
     <rect x="0" y="0" width="56" height="24" rx="12" fill="rgba(29,158,117,.14)" stroke="#1D9E75"/><text x="28" y="16" text-anchor="middle" fill="#5DCAA5" font-size="11" font-family="var(--font-sans)" font-weight="600">${onCount} ON</text>
     <rect x="64" y="0" width="58" height="24" rx="12" fill="rgba(180,178,169,.12)" stroke="#4b5563"/><text x="93" y="16" text-anchor="middle" fill="#d1d5db" font-size="11" font-family="var(--font-sans)" font-weight="600">${offCount} OFF</text>
-    <rect x="130" y="0" width="82" height="24" rx="12" fill="rgba(226,75,74,.13)" stroke="#E24B4A"/><text x="171" y="16" text-anchor="middle" fill="#F09595" font-size="11" font-family="var(--font-sans)" font-weight="600">${faultCount} PROBLEM</text>
+    <rect x="130" y="0" width="82" height="24" rx="12" fill="rgba(226,75,74,.13)" stroke="#E24B4A"/><text x="171" y="16" text-anchor="middle" fill="#F09595" font-size="11" font-family="var(--font-sans)" font-weight="600">${faultCount} FALHA</text>
+    <text x="0" y="42" fill="#FCD34D" font-size="10" font-family="var(--font-sans)">${criticalCount ? criticalCount + ' crítico(s)' : ''}</text>
   </g>`;
   if (disconnectedCount > 0) {
     h += `<rect x="24" y="58" width="240" height="22" rx="8" fill="rgba(245,158,11,.12)" stroke="#F59E0B"/><text x="34" y="73" fill="#FCD34D" font-size="10.5" font-family="var(--font-sans)" font-weight="600">⚠ ${disconnectedCount} cerca(s) não conectada(s)</text>`;
@@ -1438,7 +1458,7 @@ function renderMap() {
     const sel = selectedZone === z.id;
     const disconnected = isZoneDisconnected(z.id);
     const c   = disconnected ? '#F59E0B' : statusColors[z.status];
-    const bg2 = disconnected ? 'rgba(245,158,11,.16)' : (z.status === 'on' ? 'rgba(29,158,117,.14)' : z.status === 'off' ? 'rgba(156,163,175,.14)' : 'rgba(226,75,74,.16)');
+    const bg2 = disconnected ? 'rgba(245,158,11,.16)' : (z.status === 'on' ? 'rgba(29,158,117,.14)' : z.status === 'off' ? 'rgba(156,163,175,.14)' : z.status === 'critical' ? 'rgba(239,159,39,.16)' : 'rgba(226,75,74,.16)');
     const ringColor = disconnected ? '#F59E0B' : (showV ? voltColor(z.voltage) : c);
 
     h += `<g data-zid="${z.id}" style="cursor:pointer">`;
@@ -1619,43 +1639,52 @@ function updateToolbar() {
 
 async function removeSelected() {
   if (selectedZone === null) return;
-  edges = edges.filter(([a,b]) => a !== selectedZone && b !== selectedZone);
-  const z = zones.find(z => z.id === selectedZone);
+  const idToRemove = selectedZone;
+  const z = zones.find(z => z.id === idToRemove);
   if (!z) return;
 
   if (z.base) { alert('Setores base não podem ser removidos.'); return; }
 
   if (typeof z.id === 'string') {
-    // setor do backend
-    const res = await apiPost('/api/remover', { id: z.id });
-    if (!res.ok) { alert(res.msg); return; }
+    try {
+      const res = await apiPost('/api/remover', { id: z.id });
+      if (!res.ok) { alert(res.msg || 'Não foi possível remover.'); return; }
+    } catch (err) {
+      alert(err.message || 'Não foi possível remover.');
+      return;
+    }
   }
 
-  edges = edges.filter(([a, b]) => a !== selectedZone && b !== selectedZone);
-  zones = zones.filter(z => z.id !== selectedZone);
+  edges = edges.filter(([a, b]) => a !== idToRemove && b !== idToRemove);
+  zones = zones.filter(z => z.id !== idToRemove);
   selectedZone = null;
   document.getElementById('zone-ctrl-name').textContent = 'Selecione uma zona';
   document.getElementById('zone-ctrl-name').style.color = 'var(--color-text-secondary)';
   updateToolbar();
   renderAll();
 }
-
 async function applyRename() {
   if (selectedZone === null) return;
-  const val = document.getElementById('rename-input').value.trim();
+  const input = document.getElementById('rename-input');
+  const val = input.value.trim();
   if (!val) return;
   const z = zones.find(z => z.id === selectedZone);
-  if (z) z.name = val;
+  if (!z) return;
+  const oldName = z.name;
 
-  // Sincroniza com backend se for setor real
-  if (typeof selectedZone === 'string') {
-    await apiPost('/api/editar', { id: selectedZone, nome: val });
+  try {
+    if (typeof selectedZone === 'string') {
+      const res = await apiPost('/api/editar', { id: selectedZone, nome: val });
+      if (!res.ok) throw new Error(res.msg || 'Não foi possível renomear.');
+    }
+    z.name = val;
+    renderZoneList(); renderVoltageList(); renderBattList(); renderMap();
+    document.getElementById('zone-ctrl-name').textContent = val;
+  } catch (err) {
+    z.name = oldName;
+    alert(err.message || 'Não foi possível renomear.');
   }
-
-  renderZoneList(); renderVoltageList(); renderBattList(); renderMap();
-  document.getElementById('zone-ctrl-name').textContent = val;
 }
-
 // ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll() {
   updateDisconnectedDiagnostics();
