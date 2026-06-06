@@ -206,7 +206,7 @@ A arquitetura foi desenvolvida para permitir expansão futura, incluindo integra
 
 # Como Executar a Aplicação
 
-A aplicação já está pronta para uso e não requer configuração adicional.
+* Baixe o arquivo 'index.html`
 
 ## Abrindo o Sistema
 
