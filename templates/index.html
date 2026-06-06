@@ -680,10 +680,10 @@ body.fg-authenticated #login-overlay{
 
     <div id="map-toolbar">
       <span id="tb-hint">Editor do mapa</span>
-      <button class="tb-btn" id="tb-add" onclick="fgToggleAddMode(event)"><i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto</button>
-      <button class="tb-btn" id="tb-connect" onclick="fgToggleConnectMode(event)"><i class="ti ti-route" style="font-size:14px"></i> Ligar pontos</button>
-      <button class="tb-btn tb-danger" id="tb-remove-line" onclick="fgToggleRemoveLineMode(event)"><i class="ti ti-cut" style="font-size:14px"></i> Remover linha</button>
-      <button class="tb-btn tb-danger" id="tb-remove" onclick="fgRemoveSelected(event)" style="display:none"><i class="ti ti-map-pin-minus" style="font-size:14px"></i> Remover</button>
+      <button class="tb-btn" id="tb-add" onclick="toggleAddMode()"><i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto</button>
+      <button class="tb-btn" id="tb-connect" onclick="toggleConnectMode()"><i class="ti ti-route" style="font-size:14px"></i> Ligar pontos</button>
+      <button class="tb-btn tb-danger" id="tb-remove-line" onclick="toggleRemoveLineMode()"><i class="ti ti-cut" style="font-size:14px"></i> Remover linha</button>
+      <button class="tb-btn tb-danger" id="tb-remove" onclick="removeSelected()" style="display:none"><i class="ti ti-map-pin-minus" style="font-size:14px"></i> Remover</button>
       <div class="rename-wrap" id="rename-wrap" style="display:none">
         <input type="text" id="rename-input" placeholder="Nome da zona…" maxlength="40">
         <button onclick="applyRename()"><i class="ti ti-check"></i></button>
@@ -1062,6 +1062,7 @@ async function logout() {
   localStorage.removeItem('fg_auth_ok');
   const overlay = document.getElementById('login-overlay');
   if (overlay) overlay.classList.remove('hidden');
+  document.body.classList.remove('fg-authenticated');
 }
 
 // ── SYNC com backend ──────────────────────────────────────────────────────────
@@ -1121,7 +1122,7 @@ async function syncFromBackend() {
 
   // Remove zonas reais que sumiram do backend, mas mantém pontos locais temporários
   // Isso evita o bug em que "Add ponto" aparecia e sumia no próximo sync.
-  zones = zones.filter(z => typeof z.id === 'number' || backendIds.has(z.id));
+  zones = zones.filter(z => typeof z.id === 'number' || String(z.id).startsWith('local_') || backendIds.has(String(z.id)));
 
   // Garante arestas default se ainda não há
   if (edges.length === 0) {
@@ -1948,6 +1949,7 @@ const FG_TEST_PASS = 'fence123';
 function showLogin() {
   const overlay = document.getElementById('login-overlay');
   if (overlay) overlay.classList.remove('hidden');
+  document.body.classList.remove('fg-authenticated');
 }
 function hideLogin() {
   const overlay = document.getElementById('login-overlay');
@@ -2006,6 +2008,7 @@ function setupUnifiedLogin() {
         }
         localSetLogged(true);
         overlay.classList.add('hidden');
+        document.body.classList.add('fg-authenticated');
         if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
         return;
       }
@@ -2013,6 +2016,7 @@ function setupUnifiedLogin() {
       const res = await apiPost('/login', { usuario, senha });
       if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
       overlay.classList.add('hidden');
+      document.body.classList.add('fg-authenticated');
       if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
     } catch (err) {
       if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
@@ -2400,29 +2404,59 @@ function installEditorClickHandlers() {
       ? getSVGPoint(e)
       : { x: e.offsetX || 200, y: e.offsetY || 200 };
 
-    const newId = 'local_' + Date.now();
     const nome = 'Zona ' + (zones.length + 1);
+    let novaZona = null;
 
-    zones.push({
-      id: newId,
-      name: nome,
-      status: 'off',
-      defeito: false,
-      ligado: false,
-      voltage: 0,
-      tensaoV: 0,
-      battery: 100,
-      temp: '22°C',
-      health: 'Nova',
-      fault: null,
-      base: false,
-      x: p.x,
-      y: p.y
-    });
+    // Quando roda via Flask, cria a zona no backend para ela não sumir no próximo sync.
+    if (window.location.protocol !== 'file:') {
+      try {
+        const res = await apiPost('/api/adicionar', { nome });
+        if (res && res.ok && res.setor && res.setor.id) {
+          novaZona = res.setor;
+        } else {
+          alert((res && res.msg) || 'Não foi possível criar a zona no servidor.');
+          setEditorMode(null);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      } catch (err) {
+        alert(err.message || 'Erro ao criar zona no servidor.');
+        setEditorMode(null);
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+    } else {
+      novaZona = { id: 'local_' + Date.now(), nome, ligado: false, defeito: false, tensao: 0, status: 'desligado', base: false };
+    }
 
+    const newId = novaZona.id;
     posMap[newId] = { x: p.x, y: p.y };
+
+    if (!zones.some(z => String(z.id) === String(newId))) {
+      zones.push({
+        id: newId,
+        name: novaZona.nome || nome,
+        status: backendStatusToUI ? backendStatusToUI(novaZona) : 'off',
+        defeito: !!novaZona.defeito,
+        ligado: !!novaZona.ligado,
+        voltage: tensaoToKv ? tensaoToKv(novaZona.tensao || 0) : 0,
+        tensaoV: Number(novaZona.tensao || 0),
+        battery: 100,
+        temp: '22°C',
+        health: 'Nova',
+        fault: null,
+        base: !!novaZona.base,
+        x: p.x,
+        y: p.y
+      });
+    }
+
+    autoConnectNewZone(newId, p);
     selectedZone = newId;
     setEditorMode(null);
+    if (window.location.protocol !== 'file:' && typeof syncFromBackend === 'function') await syncFromBackend();
     if (typeof selectZone === 'function') selectZone(newId);
     if (typeof renderAll === 'function') renderAll();
     e.preventDefault();
@@ -2495,6 +2529,7 @@ function setupUnifiedLogin() {
         }
         localSetLogged(true);
         overlay.classList.add('hidden');
+        document.body.classList.add('fg-authenticated');
         if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
         return;
       }
@@ -2502,6 +2537,7 @@ function setupUnifiedLogin() {
       const res = await apiPost('/login', { usuario, senha });
       if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
       overlay.classList.add('hidden');
+      document.body.classList.add('fg-authenticated');
       if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
     } catch (err) {
       if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
@@ -2518,353 +2554,6 @@ setupUnifiedLogin();
 
 syncFromBackend();
 setInterval(syncFromBackend, POLL_MS);
-</script>
-
-<script id="fg-final-fix">
-(function(){
-  'use strict';
-
-  const USER = 'operador';
-  const PASS = 'fence123';
-
-  // Sempre começa na tela de login ao abrir/recarregar.
-  try {
-    localStorage.removeItem('fg_logged');
-    localStorage.removeItem('fg_auth_ok');
-  } catch(e) {}
-
-  function qs(id){ return document.getElementById(id); }
-
-  function showLogin(){
-    document.body.classList.remove('fg-authenticated');
-    const overlay = qs('login-overlay');
-    if (overlay) overlay.classList.remove('hidden');
-  }
-
-  function hideLogin(){
-    document.body.classList.add('fg-authenticated');
-    const overlay = qs('login-overlay');
-    if (overlay) overlay.classList.add('hidden');
-  }
-
-  function normalizeZone(z){
-    if (!z) return;
-    z.voltage = Number(z.voltage || 0);
-    if (z.defeito || z.status === 'fault') {
-      z.status = 'fault';
-      z.ligado = false;
-      z.voltage = 0;
-      z.tensaoV = 0;
-      return;
-    }
-    if (!z.ligado || z.voltage <= 0) {
-      z.status = 'off';
-      z.ligado = false;
-      z.voltage = 0;
-      z.tensaoV = 0;
-      return;
-    }
-    z.status = z.voltage < 4 ? 'critical' : 'on';
-    z.tensaoV = Math.round(z.voltage * 1000);
-  }
-
-  function renderSafe(){
-    try { if (typeof window.updateToolbar === 'function') window.updateToolbar(); } catch(e){}
-    try { if (typeof window.renderAll === 'function') window.renderAll(); } catch(e){}
-  }
-
-  function svgPoint(evt){
-    const svg = qs('map-svg');
-    if (!svg) return {x:200,y:200};
-    try {
-      if (typeof window.getSVGPoint === 'function') return window.getSVGPoint(evt);
-    } catch(e){}
-    const rect = svg.getBoundingClientRect();
-    const vb = svg.viewBox && svg.viewBox.baseVal;
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-    if (vb && vb.width && vb.height) {
-      return {
-        x: vb.x + x * vb.width / rect.width,
-        y: vb.y + y * vb.height / rect.height
-      };
-    }
-    return {x,y};
-  }
-
-  function resetButtons(){
-    const add = qs('tb-add');
-    const con = qs('tb-connect');
-    const rem = qs('tb-remove-line');
-    if (add) { add.classList.toggle('tb-active', !!window.addMode); add.innerHTML = window.addMode ? '<i class="ti ti-x" style="font-size:14px"></i> Cancelar add' : '<i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto'; }
-    if (con) { con.classList.toggle('tb-active', !!window.connectMode); con.innerHTML = window.connectMode ? '<i class="ti ti-x" style="font-size:14px"></i> Parar ligação' : '<i class="ti ti-route" style="font-size:14px"></i> Ligar pontos'; }
-    if (rem) { rem.classList.toggle('tb-active', !!window.removeLineMode); rem.innerHTML = window.removeLineMode ? '<i class="ti ti-x" style="font-size:14px"></i> Parar remoção' : '<i class="ti ti-cut" style="font-size:14px"></i> Remover linha'; }
-
-    const svg = qs('map-svg');
-    if (svg) {
-      svg.classList.toggle('add-mode', !!window.addMode);
-      svg.classList.toggle('connect-mode', !!window.connectMode);
-      svg.classList.toggle('remove-line-mode', !!window.removeLineMode);
-    }
-
-    const hint = qs('tb-hint');
-    if (hint) hint.textContent = window.addMode ? 'Clique em uma área vazia do mapa para adicionar ponto' :
-      window.connectMode ? 'Clique em dois pontos para ligar' :
-      window.removeLineMode ? 'Clique em uma linha para remover' :
-      'Editor do mapa';
-  }
-
-  function setMode(mode){
-    window.addMode = mode === 'add';
-    window.connectMode = mode === 'connect';
-    window.removeLineMode = mode === 'removeLine';
-    window.connectStart = null;
-    window.connectPreview = null;
-    resetButtons();
-    try { if (typeof window.renderMap === 'function') window.renderMap(); } catch(e){}
-    setTimeout(resetButtons, 30);
-  }
-
-  window.fgToggleAddMode = function(e){
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    setMode(window.addMode ? null : 'add');
-    return false;
-  };
-
-  window.fgToggleConnectMode = function(e){
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    setMode(window.connectMode ? null : 'connect');
-    return false;
-  };
-
-  window.fgToggleRemoveLineMode = function(e){
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    setMode(window.removeLineMode ? null : 'removeLine');
-    return false;
-  };
-
-  // Sobrescreve também os nomes antigos.
-  window.toggleAddMode = window.fgToggleAddMode;
-  window.toggleConnectMode = window.fgToggleConnectMode;
-  window.toggleRemoveLineMode = window.fgToggleRemoveLineMode;
-
-  window.fgRemoveSelected = async function(e){
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    if (window.selectedZone === null || window.selectedZone === undefined) {
-      alert('Selecione uma zona para remover.');
-      return false;
-    }
-    const z = (window.zones || []).find(x => String(x.id) === String(window.selectedZone));
-    if (!z) { alert('Zona não encontrada.'); return false; }
-    if (z.base) { alert('Setores base não podem ser removidos.'); return false; }
-    if (!confirm('Remover ' + z.name + '?')) return false;
-
-    window.edges = (window.edges || []).filter(([a,b]) => String(a) !== String(z.id) && String(b) !== String(z.id));
-    window.zones = (window.zones || []).filter(x => String(x.id) !== String(z.id));
-    window.selectedZone = null;
-    const name = qs('zone-ctrl-name');
-    if (name) name.textContent = 'Selecione uma zona';
-    setMode(null);
-    renderSafe();
-    return false;
-  };
-  window.removeSelected = window.fgRemoveSelected;
-
-  window.removeEdgeAt = function(index){
-    index = Number(index);
-    if (!window.removeLineMode) return;
-    if (!Number.isFinite(index) || index < 0 || index >= (window.edges || []).length) return;
-    window.edges.splice(index, 1);
-    setMode(null);
-    renderSafe();
-  };
-
-  // Corrige ações de setor localmente.
-  window.zoneAction = async function(acao){
-    if (window.selectedZone === null || window.selectedZone === undefined) return;
-    const z = (window.zones || []).find(x => String(x.id) === String(window.selectedZone));
-    if (!z) return;
-
-    if (acao === 'ligar') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    } else if (acao === 'desligar') {
-      z.defeito = false; z.fault = null; z.ligado = false; z.voltage = 0;
-    } else if (acao === 'reiniciar') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    } else if (acao === 'manutencao') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    }
-    normalizeZone(z);
-    try { if (typeof window.selectZone === 'function') window.selectZone(z.id); } catch(e){}
-    renderSafe();
-  };
-
-  window.maintenanceAll = async function(){
-    if (!confirm('Executar manutenção em todas as cercas/setores?')) return;
-    (window.zones || []).forEach(z => {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-      normalizeZone(z);
-    });
-    renderSafe();
-  };
-
-  window.updateVolt = function(id, val){
-    const z = (window.zones || []).find(x => String(x.id) === String(id));
-    if (!z) return;
-    z.defeito = false; z.fault = null; z.voltage = Number(val); z.ligado = z.voltage > 0;
-    normalizeZone(z);
-    renderSafe();
-  };
-
-  window.logout = function(){
-    showLogin();
-  };
-
-  // API local fake para evitar falha quando aberto por file://
-  window.apiFetch = async function(url){
-    if (url === '/api/sensores') {
-      (window.zones || []).forEach(normalizeZone);
-      return {
-        setores: (window.zones || []).map(z => ({
-          id: z.id, nome: z.name, ligado: !!z.ligado, defeito: !!z.defeito,
-          tensao: Math.round((z.voltage || 0) * 1000),
-          tensao_alvo: Math.round((z.voltage || 0) * 1000),
-          status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
-          base: !!z.base, ts: Date.now()/1000
-        })),
-        alertas: (window.zones || []).filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4)),
-        ts: Date.now()/1000
-      };
-    }
-    return {ok:true};
-  };
-
-  window.apiPost = async function(url, data){
-    if (url === '/login') {
-      if ((data.usuario || '').trim() === USER && data.senha === PASS) return {ok:true};
-      throw new Error('Usuário ou senha inválidos');
-    }
-    if (url === '/logout') return {ok:true};
-    return {ok:true};
-  };
-
-  function install(){
-    showLogin();
-
-    const form = qs('login-form');
-    if (form && form.dataset.finalLogin !== '1') {
-      form.dataset.finalLogin = '1';
-      form.addEventListener('submit', function(ev){
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
-        const msg = qs('msg');
-        const usuario = (qs('usuario')?.value || '').trim();
-        const senha = qs('senha')?.value || '';
-        if (usuario === USER && senha === PASS) {
-          if (msg) msg.textContent = '';
-          hideLogin();
-          setTimeout(() => { try { if (typeof window.syncFromBackend === 'function') window.syncFromBackend(); } catch(e){} }, 50);
-        } else {
-          if (msg) msg.textContent = 'Usuário ou senha inválidos';
-        }
-      }, true);
-    }
-
-    // Remove qualquer handler antigo dos botões por captura.
-    const add = qs('tb-add');
-    const con = qs('tb-connect');
-    const remLine = qs('tb-remove-line');
-    const rem = qs('tb-remove');
-
-    if (add && add.dataset.finalFixed !== '1') {
-      add.dataset.finalFixed = '1';
-      add.addEventListener('click', window.fgToggleAddMode, true);
-    }
-    if (con && con.dataset.finalFixed !== '1') {
-      con.dataset.finalFixed = '1';
-      con.addEventListener('click', window.fgToggleConnectMode, true);
-    }
-    if (remLine && remLine.dataset.finalFixed !== '1') {
-      remLine.dataset.finalFixed = '1';
-      remLine.addEventListener('click', window.fgToggleRemoveLineMode, true);
-    }
-    if (rem && rem.dataset.finalFixed !== '1') {
-      rem.dataset.finalFixed = '1';
-      rem.addEventListener('click', window.fgRemoveSelected, true);
-    }
-
-    installSvgHandler();
-    resetButtons();
-  }
-
-  function installSvgHandler(){
-    const svg = qs('map-svg');
-    if (!svg || svg.dataset.finalSvgFixed === '1') return;
-    svg.dataset.finalSvgFixed = '1';
-
-    svg.addEventListener('click', function(ev){
-      // Remover linha: só se o modo remover linha estiver ativo.
-      if (window.removeLineMode) {
-        const target = ev.target;
-        const hit = target && (target.closest('[data-edge-idx]') || target.closest('.edge-hit'));
-        if (hit) {
-          const idx = hit.dataset.edgeIdx || hit.getAttribute('data-edge-idx');
-          window.removeEdgeAt(idx);
-          ev.preventDefault();
-          ev.stopImmediatePropagation();
-        }
-        return;
-      }
-
-      // Add ponto: nunca remove linha, só adiciona zona.
-      if (window.addMode) {
-        const target = ev.target;
-        if (target && (target.closest('[data-zone-id]') || target.closest('.zone-node') || target.closest('button'))) return;
-        const p = svgPoint(ev);
-        const id = 'local_' + Date.now();
-        const nome = 'Zona ' + ((window.zones || []).length + 1);
-        if (!window.zones) window.zones = [];
-        if (!window.edges) window.edges = [];
-        if (!window.posMap) window.posMap = {};
-        window.zones.push({
-          id, name: nome, status: 'off', defeito: false, ligado: false,
-          voltage: 0, tensaoV: 0, battery: 100, temp: '22°C',
-          health: 'Nova', fault: null, base: false, x: p.x, y: p.y
-        });
-        window.posMap[id] = {x:p.x, y:p.y};
-        window.selectedZone = id;
-        setMode(null);
-        try { if (typeof window.selectZone === 'function') window.selectZone(id); } catch(e){}
-        renderSafe();
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
-      }
-    }, true);
-  }
-
-  // Se renderMap redesenhar o SVG, reinstala handlers.
-  const wrap = setInterval(function(){
-    if (typeof window.renderMap === 'function' && !window.renderMap.__finalWrapped) {
-      const old = window.renderMap;
-      window.renderMap = function(){
-        const r = old.apply(this, arguments);
-        setTimeout(installSvgHandler, 0);
-        setTimeout(resetButtons, 0);
-        return r;
-      };
-      window.renderMap.__finalWrapped = true;
-      clearInterval(wrap);
-    }
-  }, 50);
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', install);
-  } else {
-    install();
-  }
-  setTimeout(install, 500);
-  setTimeout(showLogin, 100);
-})();
 </script>
 
 </body>
