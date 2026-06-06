@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistema Rural V6</title>
+
+    <!-- LEAFLET MAPA REAL -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            display: flex;
+            background: #0f0f0f;
+            color: white;
+        }
+
+        /* MENU LATERAL */
+        .sidebar {
+            width: 220px;
+            background: #1b1b1b;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            color: #00ccff;
+        }
+
+        .menu-item {
+            margin: 15px 0;
+            cursor: pointer;
+            padding: 8px;
+            background: #333;
+            border-radius: 5px;
+        }
+
+        .menu-item:hover {
+            background: #555;
+        }
+
+        /* CONTEÚDO */
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .card {
+            background: #222;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .ok { color: #00ff88; }
+        .falha { color: red; }
+
+        #map {
+            height: 500px;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>🌾 Fazenda</h2>
+
+    <div class="menu-item" onclick="mostrar('painel')">⚡ Sensores</div>
+    <div class="menu-item" onclick="mostrar('mapa')">🗺️ Mapa</div>
+    <div class="menu-item" onclick="mostrar('alerta')">🚨 Alertas</div>
+</div>
+
+<div class="content">
+
+    <div id="painel"></div>
+    <div id="mapa" style="display:none;"></div>
+    <div id="alerta" style="display:none;"></div>
+
+</div>
+
+<script>
+
+let ultimoAlerta = "";
+let map = null; // evita recriar mapa toda hora
+
+async function carregarSensores() {
+
+    const res = await fetch("/api/sensores");
+    const dados = await res.json();
+
+    let html = "";
+
+    for (let setor in dados) {
+
+        let s = dados[setor];
+
+        html += `
+            <div class="card">
+                <h3>${setor}</h3>
+                <p>Tensão: ${s.tensao} V</p>
+                <p class="${s.status === "FALHA" ? "falha" : "ok"}">
+                    ${s.status}
+                </p>
+            </div>
+        `;
+    }
+
+    document.getElementById("painel").innerHTML = html;
+}
+
+
+// 🗺️ MAPA REAL LEAFLET
+async function carregarMapa() {
+
+    const res = await fetch("/api/sensores");
+    const dados = await res.json();
+
+    document.getElementById("mapa").innerHTML = `<div id="map"></div>`;
+
+    // cria mapa só uma vez
+    if (map !== null) {
+        map.remove();
+    }
+
+    map = L.map('map').setView([-29.7, -53.8], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'OpenStreetMap'
+    }).addTo(map);
+
+    for (let setor in dados) {
+
+        let s = dados[setor];
+
+        let cor = s.status === "FALHA" ? "red" : "green";
+
+        L.circleMarker([s.lat, s.lon], {
+            radius: 8,
+            color: cor,
+            fillColor: cor,
+            fillOpacity: 0.9
+        }).addTo(map)
+        .bindPopup(
+            `<b>${setor}</b><br>${s.tensao} V<br>${s.status}`
+        );
+    }
+}
+
+
+// 🚨 ALERTA SEM SPAM
+async function carregarAlerta() {
+
+    const res = await fetch("/api/alerta");
+    const dados = await res.json();
+
+    if (dados.alerta) {
+
+        document.getElementById("alerta").innerHTML =
+            `<h2 style="color:red;">🚨 ${dados.mensagem}</h2>`;
+
+        if (ultimoAlerta !== dados.mensagem) {
+            alert(dados.mensagem);
+            ultimoAlerta = dados.mensagem;
+        }
+
+    } else {
+        document.getElementById("alerta").innerHTML =
+            "<h2 style='color:green;'>Tudo OK</h2>";
+
+        ultimoAlerta = "";
+    }
+}
+
+
+// MENU LATERAL
+function mostrar(secao) {
+
+    document.getElementById("painel").style.display = "none";
+    document.getElementById("mapa").style.display = "none";
+    document.getElementById("alerta").style.display = "none";
+
+    document.getElementById(secao).style.display = "block";
+
+    if (secao === "painel") carregarSensores();
+    if (secao === "mapa") carregarMapa();
+    if (secao === "alerta") carregarAlerta();
+}
+
+// inicial
+mostrar("painel");
+
+setInterval(carregarSensores, 3000);
+setInterval(carregarAlerta, 5000);
+
+</script>
+
+</body>
+</html>
