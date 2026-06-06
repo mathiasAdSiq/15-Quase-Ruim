@@ -179,6 +179,8 @@ Representação da infraestrutura real:
 | Aplicativo Mobile                               | 📋 Planejado          |
 | Notificações Push                               | 📋 Planejado          |
 | Inteligência Artificial para Predição de Falhas | 📋 Planejado          |
+| Sistema ESP32                                   | 📋 Planejado          |
+
 
 ### Legenda
 
