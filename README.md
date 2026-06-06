@@ -109,7 +109,111 @@ Planejamento futuro:
 
 ## Modelo da Arquitetura
 
-![Arquitetura do Sistema](arquitetura_fence_guard.svg)
+# Diagrama Técnico da Arquitetura
+┌─────────────────────────────┐
+│          OPERADOR           │
+│-----------------------------│
+│ • Monitoramento             │
+│ • Controle de tensão        │
+│ • Manutenção                │
+│ • Diagnóstico               │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│       FRONTEND WEB          │
+│-----------------------------│
+│ HTML + CSS + JavaScript     │
+│ Dashboard SCADA             │
+│ Mapa SVG Interativo         │
+│ Gestão de Zonas             │
+│ Controle de Tensão          │
+│ Visualização de Falhas      │
+└──────────────┬──────────────┘
+               │ REST API
+               ▼
+┌─────────────────────────────┐
+│       BACKEND FLASK         │
+│-----------------------------│
+│ /api/sensores               │
+│ /api/tensao                 │
+│ /api/controle               │
+│ /api/estatisticas           │
+│ /api/diagnostico            │
+│ /api/manutencao_todos       │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│        NÚCLEO SCADA         │
+│-----------------------------│
+│ Regras de negócio           │
+│ Simulação de sensores       │
+│ Histórico de tensão         │
+│ Eventos e alarmes           │
+│ Detecção de falhas          │
+│ Estado dos setores          │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│     CERCA ELÉTRICA RURAL    │
+│-----------------------------│
+│ Setor 1                     │
+│ Setor 2                     │
+│ Setor 3                     │
+│ Setor 4                     │
+│ Energizador                 │
+│ Fios / Perímetro            │
+│ Sensores de Falha           │
+└─────────────────────────────┘
+# Fluxo Operacional
+Operador
+    │
+    ▼
+Dashboard SCADA
+    │
+    ├── Consultar Sensores ─────────────► Flask API
+    │                                     │
+    │                                     ▼
+    │                               Núcleo SCADA
+    │                                     │
+    │                                     ▼
+    │                             Cerca Elétrica
+    │
+    ├── Ajustar Tensão ───────────► /api/tensao
+    │
+    ├── Ligar/Desligar ───────────► /api/controle
+    │
+    ├── Diagnóstico ──────────────► /api/diagnostico
+    │
+    └── Manutenção ───────────────► /api/manutencao_todos
+   # Modelo Arquitetural (Camadas)
+   ┌──────────────────────────────────────────┐
+│ CAMADA 1 - APRESENTAÇÃO                  │
+│ Frontend Web (HTML/CSS/JS + SVG)         │
+└──────────────────────────────────────────┘
+                    │
+┌──────────────────────────────────────────┐
+│ CAMADA 2 - SERVIÇOS                       │
+│ Flask REST API                            │
+└──────────────────────────────────────────┘
+                    │
+┌──────────────────────────────────────────┐
+│ CAMADA 3 - CONTROLE SCADA                │
+│ Eventos • Alarmes • Regras               │
+│ Diagnóstico • Histórico                  │
+└──────────────────────────────────────────┘
+                    │
+┌──────────────────────────────────────────┐
+│ CAMADA 4 - DISPOSITIVOS                  │
+│ Setores • Energizador • Sensores         │
+└──────────────────────────────────────────┘
+                    │
+┌──────────────────────────────────────────┐
+│ CAMADA 5 - INFRAESTRUTURA                │
+│ Cerca Elétrica Rural                     │
+└──────────────────────────────────────────┘
 
 ### Componentes Principais
 
