@@ -110,17 +110,17 @@ Planejamento futuro:
 ## Modelo da Arquitetura
 
 # Diagrama Técnico da Arquitetura
-┌─────────────────────────────┐
+ ─────────────────────────────
 │          OPERADOR           │
 │-----------------------------│
 │ • Monitoramento             │
 │ • Controle de tensão        │
 │ • Manutenção                │
 │ • Diagnóstico               │
-└──────────────┬──────────────┘
+ ──────────────┬──────────────
                │
                ▼
-┌─────────────────────────────┐
+ ───────────────────────────── 
 │       FRONTEND WEB          │
 │-----------------------------│
 │ HTML + CSS + JavaScript     │
@@ -129,10 +129,10 @@ Planejamento futuro:
 │ Gestão de Zonas             │
 │ Controle de Tensão          │
 │ Visualização de Falhas      │
-└──────────────┬──────────────┘
+ ──────────────┬──────────────
                │ REST API
                ▼
-┌─────────────────────────────┐
+ ─────────────────────────────
 │       BACKEND FLASK         │
 │-----------------------------│
 │ /api/sensores               │
@@ -141,10 +141,10 @@ Planejamento futuro:
 │ /api/estatisticas           │
 │ /api/diagnostico            │
 │ /api/manutencao_todos       │
-└──────────────┬──────────────┘
+ ──────────────┬────────────── 
                │
                ▼
-┌─────────────────────────────┐
+ ─────────────────────────────
 │        NÚCLEO SCADA         │
 │-----------------------------│
 │ Regras de negócio           │
@@ -153,10 +153,10 @@ Planejamento futuro:
 │ Eventos e alarmes           │
 │ Detecção de falhas          │
 │ Estado dos setores          │
-└──────────────┬──────────────┘
+ ──────────────┬──────────────
                │
                ▼
-┌─────────────────────────────┐
+ ─────────────────────────────
 │     CERCA ELÉTRICA RURAL    │
 │-----------------------------│
 │ Setor 1                     │
@@ -166,7 +166,7 @@ Planejamento futuro:
 │ Energizador                 │
 │ Fios / Perímetro            │
 │ Sensores de Falha           │
-└─────────────────────────────┘
+ ─────────────────────────────
 # Fluxo Operacional
 Operador
     │
@@ -189,14 +189,14 @@ Dashboard SCADA
     │
     └── Manutenção ───────────────► /api/manutencao_todos
    # Modelo Arquitetural (Camadas)
-   ┌──────────────────────────────────────────┐
+┌──────────────────────────────────────────┐
 │ CAMADA 1 - APRESENTAÇÃO                  │
 │ Frontend Web (HTML/CSS/JS + SVG)         │
 └──────────────────────────────────────────┘
                     │
 ┌──────────────────────────────────────────┐
-│ CAMADA 2 - SERVIÇOS                       │
-│ Flask REST API                            │
+│ CAMADA 2 - SERVIÇOS                      │
+│ Flask REST API                           │
 └──────────────────────────────────────────┘
                     │
 ┌──────────────────────────────────────────┐
