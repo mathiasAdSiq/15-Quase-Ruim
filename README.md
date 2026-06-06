@@ -300,6 +300,3 @@ O projeto Fence Guard SCADA apresenta uma solução moderna para monitoramento d
 A arquitetura foi desenvolvida para permitir expansão futura, incluindo integração com dispositivos IoT, sensores físicos e banco de dados persistente.
 
 
-
-
-ARQUITETURA:
