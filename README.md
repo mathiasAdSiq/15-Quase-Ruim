@@ -110,63 +110,9 @@ Planejamento futuro:
 ## Modelo da Arquitetura
 
 # Diagrama Técnico da Arquitetura
-┌─────────────────────────────┐
-│          OPERADOR           │
-│-----------------------------│
-│ • Monitoramento             │
-│ • Controle de tensão        │
-│ • Manutenção                │
-│ • Diagnóstico               │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│       FRONTEND WEB          │
-│-----------------------------│
-│ HTML + CSS + JavaScript     │
-│ Dashboard SCADA             │
-│ Mapa SVG Interativo         │
-│ Gestão de Zonas             │
-│ Controle de Tensão          │
-│ Visualização de Falhas      │
-└──────────────┬──────────────┘
-               │ REST API
-               ▼
-┌─────────────────────────────┐
-│       BACKEND FLASK         │
-│-----------------------------│
-│ /api/sensores               │
-│ /api/tensao                 │
-│ /api/controle               │
-│ /api/estatisticas           │
-│ /api/diagnostico            │
-│ /api/manutencao_todos       │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│        NÚCLEO SCADA         │
-│-----------------------------│
-│ Regras de negócio           │
-│ Simulação de sensores       │
-│ Histórico de tensão         │
-│ Eventos e alarmes           │
-│ Detecção de falhas          │
-│ Estado dos setores          │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│     CERCA ELÉTRICA RURAL    │
-│-----------------------------│
-│ Setor 1                     │
-│ Setor 2                     │
-│ Setor 3                     │
-│ Setor 4                     │
-│ Energizador                 │
-│ Fios / Perímetro            │
-│ Sensores de Falha           │
-└─────────────────────────────┘
+
+![Logo do Projeto](Captura de tela 2026-06-06 033352.png)
+
 # Fluxo Operacional
 Operador
     │
