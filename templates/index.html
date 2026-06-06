@@ -378,74 +378,82 @@ body { padding-top: 28px; }
 .logout-btn{font-family:monospace;font-size:11px;border:0.5px solid #4b5563;border-radius:6px;background:#111827;color:#f9fafb;padding:3px 8px;cursor:pointer}
 .logout-btn:hover{background:#1f2937;border-color:#9ca3af}
 
-
-
-
-/* LOGIN UNIFICADO */
-#login-overlay{
-  position:fixed;inset:0;background:radial-gradient(circle at top,#1f2937 0,#0b1220 48%,#050816 100%);
-  z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;
+/* ── LOGIN SCREEN ────────────────────────────────────────────── */
+#login-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: radial-gradient(circle at top, #1f2937 0, #0b1220 48%, #050816 100%);
+  display: flex; align-items: center; justify-content: center;
 }
-#login-overlay.hidden{display:none!important;}
-#login-overlay .login-card{width:100%;max-width:390px;background:linear-gradient(180deg,rgba(31,41,55,.98),rgba(17,24,39,.98));border:1px solid #273244;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:28px;color:#f9fafb;font-family:Inter,system-ui,sans-serif;}
-#login-overlay .logo{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
-#login-overlay .shield{width:48px;height:48px;border-radius:14px;border:1px solid #334155;display:grid;place-items:center;background:#0f172a;color:#1D9E75;font-size:26px;}
-#login-overlay .brand h1{font-size:20px;line-height:1.1;color:#f9fafb;}
-#login-overlay .brand p{font-size:12px;color:#9ca3af;margin-top:3px;}
-#login-overlay label{display:block;font-size:12px;color:#cbd5e1;margin:14px 0 6px;}
-#login-overlay input{width:100%;height:44px;border-radius:10px;border:1px solid #374151;background:#0b1220;color:#f9fafb;padding:0 12px;font-size:14px;outline:none;}
-#login-overlay input:focus{border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,.15);}
-#login-overlay button{width:100%;height:44px;border:0;border-radius:10px;background:#1D9E75;color:white;font-weight:700;font-size:14px;cursor:pointer;margin-top:18px;}
-#login-overlay button:hover{filter:brightness(1.08);}
-#login-overlay button:disabled{opacity:.65;cursor:wait;}
-#login-overlay .msg{min-height:18px;font-size:12px;color:#E24B4A;margin-top:12px;}
-#login-overlay .test-box{margin-top:18px;border:1px dashed #4b5563;border-radius:12px;padding:12px;background:rgba(15,23,42,.65);font-size:12px;color:#cbd5e1;line-height:1.6;}
-#login-overlay .test-box b{color:#fff;}
-#login-overlay .footer{margin-top:18px;font-size:11px;color:#64748b;text-align:center;}
-
-
-/* FORCE LOGIN FIX */
-body:not(.fg-authenticated) #login-overlay{
-  display:flex !important;
+#login-screen.hidden { display: none; }
+.login-box {
+  width: 340px;
+  background: #111827;
+  border: 0.5px solid #273244;
+  border-radius: 14px;
+  padding: 36px 32px 30px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  display: flex; flex-direction: column; align-items: center; gap: 0;
 }
-body.fg-authenticated #login-overlay{
-  display:none !important;
+.login-logo { margin-bottom: 18px; color: #f9fafb; }
+.login-title { font-size: 18px; font-weight: 700; color: #f9fafb; margin-bottom: 4px; }
+.login-sub   { font-size: 12px; color: #6b7280; margin-bottom: 28px; }
+.login-field { width: 100%; margin-bottom: 14px; }
+.login-field label { display: block; font-size: 11px; font-weight: 600; color: #9ca3af; margin-bottom: 5px; letter-spacing:.04em; text-transform: uppercase; }
+.login-field input {
+  width: 100%; padding: 9px 12px;
+  background: #0b1220; border: 0.5px solid #374151;
+  border-radius: 7px; font-size: 13px; color: #f9fafb;
+  outline: none; transition: border-color .15s;
+  font-family: var(--font-sans);
 }
-#login-overlay{
-  position:fixed !important;
-  inset:0 !important;
-  background:#050816 !important;
-  z-index:999999 !important;
-  align-items:center !important;
-  justify-content:center !important;
+.login-field input:focus { border-color: #1D9E75; }
+.login-field input.error { border-color: #E24B4A; }
+#login-error { font-size: 12px; color: #F09595; min-height: 16px; margin-bottom: 8px; text-align: center; }
+#login-btn {
+  width: 100%; padding: 10px; font-size: 13px; font-weight: 600;
+  border-radius: 8px; border: none;
+  background: #1D9E75; color: #fff;
+  cursor: pointer; transition: background .15s, opacity .15s;
+  margin-top: 4px;
 }
+#login-btn:disabled { opacity: .38; cursor: not-allowed; background: #374151; color: #6b7280; }
+#login-btn:not(:disabled):hover { background: #17835f; }
+.login-footer { font-size: 10px; color: #4b5563; margin-top: 22px; text-align: center; line-height: 1.5; }
 
 </style>
 </head>
 <body>
-<div id="login-overlay"><main class="login-card">
-<div class="logo">
-<div class="shield">⚡</div>
-<div class="brand">
-<h1>Fence Guard SCADA</h1>
-<p>Acesso seguro do operador</p>
-</div>
-</div>
-<form id="login-form">
-<label for="usuario">Usuário</label>
-<input autocomplete="username" id="usuario" name="usuario" required="" value="operador"/>
-<label for="senha">Senha</label>
-<input autocomplete="current-password" id="senha" name="senha" required="" type="password" value="fence123"/>
-<button id="btn-login" type="submit">Entrar no sistema</button>
-<div class="msg" id="msg"></div>
-</form>
-<div class="test-box">
-<div><b>Conta teste:</b> operador</div>
-<div><b>Senha:</b> fence123</div>
-</div>
-<div class="footer">Sessão protegida por cookie HttpOnly · API bloqueada sem login</div>
-</main></div>
 
+<!-- ── LOGIN SCREEN ───────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 80 80" width="48" height="48" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+        <path d="M40 4 L72 16 L72 44 C72 60 56 74 40 78 C24 74 8 60 8 44 L8 16 Z" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"/>
+        <rect x="22" y="22" width="5" height="28" rx="2"/>
+        <rect x="37" y="22" width="5" height="28" rx="2"/>
+        <rect x="52" y="22" width="5" height="28" rx="2"/>
+        <rect x="20" y="27" width="39" height="4.5" rx="2"/>
+        <rect x="20" y="39" width="39" height="4.5" rx="2"/>
+        <path d="M46 18 L34 40 L42 40 L34 62 L52 36 L43 36 Z" fill="#111827" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="login-title">Fence Guard SCADA</div>
+    <div class="login-sub">Acesse sua conta para continuar</div>
+
+    <div class="login-field" style="width:100%">
+      <label for="login-user">Usuário</label>
+      <input type="text" id="login-user" placeholder="Nome de usuário" autocomplete="username" oninput="loginCheck()">
+    </div>
+    <div class="login-field" style="width:100%">
+      <label for="login-pass">Senha</label>
+      <input type="password" id="login-pass" placeholder="Senha" autocomplete="current-password" oninput="loginCheck()" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="login-error"></div>
+    <button id="login-btn" disabled onclick="doLogin()">Criar conta / Entrar</button>
+    <div class="login-footer">Fence Guard SCADA v8 · Acesso restrito<br>Suas credenciais são armazenadas localmente com segurança.</div>
+  </div>
+</div>
 
 <div id="status-bar">
   <span>Fence Guard SCADA v8</span>
@@ -454,7 +462,7 @@ body.fg-authenticated #login-overlay{
   <span class="s-yellow" id="sb-crit">— críticos</span>
   <span class="s-red" id="sb-fault">— falhas</span>
   <span style="flex:1"></span>
-  <span class="auth-chip">{{ usuario or 'operador' }}</span>
+  <span class="auth-chip" id="sb-username">operador</span>
   <button class="logout-btn" onclick="logout()">Sair</button>
   <span id="sb-clock">--:--:--</span>
 </div>
@@ -694,13 +702,73 @@ body.fg-authenticated #login-overlay{
 </div><!-- /app -->
 
 <script>
+// ── AUTH / LOGIN ──────────────────────────────────────────────────────────────
+// Senha armazenada como hash SHA-256 — nunca em texto simples.
+// Mesmo que alguém inspecione o localStorage ou o código JS em memória,
+// só encontrará o hash irreversível, jamais a senha original.
 
-// ── HOTFIX LOGIN INICIAL ─────────────────────────────────────────────────────
-(function forceLoginOnFreshOpen(){
-  if (window.location.protocol === 'file:') {
-    localStorage.removeItem('fg_logged');
-    localStorage.removeItem('fg_auth_ok');
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let currentUser = null;
+
+function loginCheck() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  document.getElementById('login-btn').disabled = !(u.length >= 2 && p.length >= 4);
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-user').classList.remove('error');
+  document.getElementById('login-pass').classList.remove('error');
+}
+
+async function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (!u || p.length < 4) return;
+
+  const hash = await sha256(p);
+  const stored = localStorage.getItem('fg_user_' + u);
+
+  if (!stored) {
+    // Primeira vez: cria conta com hash da senha
+    localStorage.setItem('fg_user_' + u, JSON.stringify({ hash }));
+    finishLogin(u);
+  } else {
+    const data = JSON.parse(stored);
+    if (data.hash === hash) {
+      finishLogin(u);
+    } else {
+      document.getElementById('login-error').textContent = 'Senha incorreta.';
+      document.getElementById('login-pass').classList.add('error');
+    }
   }
+}
+
+function finishLogin(username) {
+  currentUser = username;
+  // Propaga nome em todos os locais da UI
+  document.getElementById('sb-username').textContent = username;
+  document.getElementById('login-screen').classList.add('hidden');
+  // Usa sessionStorage para manter sessão enquanto a aba estiver aberta
+  sessionStorage.setItem('fg_session', username);
+}
+
+function logout() {
+  currentUser = null;
+  sessionStorage.removeItem('fg_session');
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-btn').disabled = true;
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+// Restaura sessão se a aba ainda estava aberta
+(function checkSession() {
+  const s = sessionStorage.getItem('fg_session');
+  if (s) finishLogin(s);
 })();
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
@@ -868,166 +936,6 @@ function updateDisconnectedDiagnostics() {
   if (badge) badge.style.display = (count > 0 || zones.some(z => z.defeito)) ? '' : 'none';
 }
 
-
-function isLocalFileMode() {
-  return window.location.protocol === 'file:';
-}
-
-const DEMO_USERS = { operador: 'fence123' };
-
-function localLoginOK() {
-  return localStorage.getItem('fg_logged') === '1';
-}
-
-function localSetLogged(value) {
-  if (value) localStorage.setItem('fg_logged', '1');
-  else localStorage.removeItem('fg_logged');
-}
-
-function fixLocalStatusAfterAction(z) {
-  if (!z) return;
-  if (z.defeito || z.status === 'fault') {
-    z.status = 'fault';
-    z.ligado = false;
-    z.voltage = 0;
-    z.tensaoV = 0;
-    return;
-  }
-  if (!z.ligado || !z.voltage || z.voltage <= 0) {
-    z.status = 'off';
-    z.ligado = false;
-    z.voltage = 0;
-    z.tensaoV = 0;
-    return;
-  }
-  z.status = z.voltage < 4 ? 'critical' : 'on';
-  z.tensaoV = z.voltage * 1000;
-}
-
-function demoSetoresPayload() {
-  return {
-    setores: zones.map(z => ({
-      id: String(z.id),
-      nome: z.name,
-      ligado: !!z.ligado,
-      defeito: !!z.defeito,
-      tensao: Math.round((z.voltage || 0) * 1000),
-      tensao_alvo: Math.round((z.voltage || 0) * 1000),
-      status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
-      base: !!z.base,
-      ts: Date.now() / 1000
-    })),
-    alertas: zones
-      .filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4))
-      .map(z => ({
-        id: String(z.id),
-        nome: z.name,
-        defeito: !!z.defeito,
-        status: z.defeito ? 'falha' : 'critico',
-        tensao: Math.round((z.voltage || 0) * 1000)
-      })),
-    ts: Date.now() / 1000
-  };
-}
-
-async function localApiPost(url, data) {
-  if (url === '/login') {
-    const usuario = String(data?.usuario || '').trim();
-    const senha = String(data?.senha || '');
-    if (DEMO_USERS[usuario] === senha) {
-      localSetLogged(true);
-      return { ok: true, usuario };
-    }
-    throw new Error('Usuário ou senha inválidos');
-  }
-
-  if (url === '/logout') {
-    localSetLogged(false);
-    return { ok: true };
-  }
-
-  if (!localLoginOK()) throw new Error('Sessão expirada');
-
-  if (url === '/api/controle') {
-    const z = zones.find(x => String(x.id) === String(data.id));
-    if (!z) return { ok: false, msg: 'Setor não encontrado' };
-
-    if (data.acao === 'ligar') {
-      z.ligado = true;
-      z.defeito = false;
-      z.fault = null;
-      z.voltage = Math.max(z.voltage || 6, 5);
-    } else if (data.acao === 'desligar') {
-      z.ligado = false;
-      z.voltage = 0;
-      z.defeito = false;
-      z.fault = null;
-    } else if (data.acao === 'reiniciar') {
-      z.defeito = false;
-      z.fault = null;
-      z.ligado = true;
-      z.voltage = Math.max(z.voltage || 6, 5);
-    } else if (data.acao === 'manutencao') {
-      z.defeito = false;
-      z.fault = null;
-      z.ligado = true;
-      z.voltage = Math.max(z.voltage || 6, 6);
-    }
-    fixLocalStatusAfterAction(z);
-    return { ok: true, setor: z };
-  }
-
-  if (url === '/api/tensao') {
-    const z = zones.find(x => String(x.id) === String(data.id));
-    if (!z) return { ok: false, msg: 'Setor não encontrado' };
-    const kv = Math.max(0, Math.min(8, Number(data.tensao || 0) / 1000));
-    z.defeito = false;
-    z.fault = null;
-    z.voltage = kv;
-    z.ligado = kv > 0;
-    fixLocalStatusAfterAction(z);
-    return { ok: true, setor: z };
-  }
-
-  if (url === '/api/manutencao_todos') {
-    zones.forEach(z => {
-      z.defeito = false;
-      z.fault = null;
-      z.ligado = true;
-      z.voltage = Math.max(z.voltage || 6, 6);
-      fixLocalStatusAfterAction(z);
-    });
-    return { ok: true, setores: zones };
-  }
-
-  if (url === '/api/adicionar') {
-    const id = 'local_' + Date.now();
-    return { ok: true, setor: { id, nome: data.nome || 'Nova zona', ligado: false, defeito: false, tensao: 0, status: 'desligado', base: false } };
-  }
-
-  if (url === '/api/remover') return { ok: true };
-  if (url === '/api/editar') return { ok: true };
-  return { ok: true };
-}
-
-async function localApiFetch(url) {
-  if (!localLoginOK()) throw new Error('Sessão expirada');
-  if (url === '/api/sensores') return demoSetoresPayload();
-  if (url === '/api/estatisticas') {
-    const ativos = zones.filter(z => z.ligado && !z.defeito);
-    const media = ativos.length ? ativos.reduce((s,z)=>s+(z.voltage||0),0)/ativos.length*1000 : 0;
-    return {
-      ok: true,
-      total_setores: zones.length,
-      setores_falha: zones.filter(z => z.defeito).length,
-      tensao_media: media,
-      sensor_mode: 'local-demo'
-    };
-  }
-  return { ok: true };
-}
-
-
 // ── API ───────────────────────────────────────────────────────────────────────
 async function parseApiResponse(r) {
   let payload = null;
@@ -1043,12 +951,10 @@ async function parseApiResponse(r) {
   return payload || {};
 }
 async function apiFetch(url) {
-  if (isLocalFileMode()) return localApiFetch(url);
   const r = await fetch(url);
   return parseApiResponse(r);
 }
 async function apiPost(url, data) {
-  if (isLocalFileMode()) return localApiPost(url, data);
   const r = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1057,19 +963,12 @@ async function apiPost(url, data) {
   return parseApiResponse(r);
 }
 
-async function logout() {
-  try { await apiPost('/logout', {}); } catch (_) {}
-  localStorage.removeItem('fg_auth_ok');
-  const overlay = document.getElementById('login-overlay');
-  if (overlay) overlay.classList.remove('hidden');
-  document.body.classList.remove('fg-authenticated');
-}
 
 // ── SYNC com backend ──────────────────────────────────────────────────────────
 async function syncFromBackend() {
   let data;
   try { data = await apiFetch('/api/sensores'); }
-  catch(e) { loadDemoData(); return; }
+  catch(e) { return; }
 
   const backendSetores = data.setores; // array de objetos
 
@@ -1122,7 +1021,7 @@ async function syncFromBackend() {
 
   // Remove zonas reais que sumiram do backend, mas mantém pontos locais temporários
   // Isso evita o bug em que "Add ponto" aparecia e sumia no próximo sync.
-  zones = zones.filter(z => typeof z.id === 'number' || String(z.id).startsWith('local_') || backendIds.has(String(z.id)));
+  zones = zones.filter(z => typeof z.id === 'number' || backendIds.has(z.id));
 
   // Garante arestas default se ainda não há
   if (edges.length === 0) {
@@ -1181,8 +1080,7 @@ async function zoneAction(acao) {
   const keepSelected = z.id;
   const res = await apiPost('/api/controle', { id: z.id, acao });
   if (res && res.ok) {
-    await setupUnifiedLogin();
-syncFromBackend();
+    await syncFromBackend();
     selectZone(keepSelected);
   } else if (res && res.msg) {
     alert(res.msg);
@@ -1440,7 +1338,10 @@ function updateStats() {
   document.getElementById('cnt-off').textContent   = zones.filter(z => z.status === 'off').length + ' off';
   const criticalCount = zones.filter(z => z.status === 'critical').length;
   document.getElementById('cnt-fault').textContent = zones.filter(z => z.status === 'fault').length + ' falha' + (criticalCount ? ' · ' + criticalCount + ' crítico' : '') + (disconnectedCount ? ' · ' + disconnectedCount + ' descon.' : '');
-  document.getElementById('map-subtitle').textContent = zones.length + ' zonas · ' + (disconnectedCount ? disconnectedCount + ' cerca(s) não conectada(s)' : 'todas conectadas') + ' · atualizado agora';
+  const userLabel = currentUser ? ' · operador: ' + currentUser : '';
+  document.getElementById('map-subtitle').textContent = zones.length + ' zonas · ' + (disconnectedCount ? disconnectedCount + ' cerca(s) não conectada(s)' : 'todas conectadas') + ' · atualizado agora' + userLabel;
+  // also keep status-bar chip in sync
+  if (currentUser) document.getElementById('sb-username').textContent = currentUser;
 }
 
 // ── MAP ───────────────────────────────────────────────────────────────────────
@@ -1651,6 +1552,16 @@ function renderMap() {
   const fieldX = 50, fieldY = disconnectedCount > 0 ? 92 : 72, fieldW = Math.max(W - 100, 420), fieldH = Math.max(H - (disconnectedCount > 0 ? 190 : 170), 260);
   h += `<rect x="${fieldX}" y="${fieldY}" width="${fieldW}" height="${fieldH}" rx="18" fill="rgba(2,6,23,.55)" stroke="#273244" stroke-width="1"/>`;
 
+  // Clamp all zone positions inside the field so nodes never escape the map
+  const nodePad = 20;
+  const minX = fieldX + nodePad, maxX = fieldX + fieldW - nodePad;
+  const minY = fieldY + nodePad, maxY = fieldY + fieldH - nodePad;
+  zones.forEach(z => {
+    z.x = Math.max(minX, Math.min(maxX, z.x));
+    z.y = Math.max(minY, Math.min(maxY, z.y));
+    posMap[z.id] = { x: z.x, y: z.y };
+  });
+
   // Linhas da cerca entre setores reais
   edges.forEach(([a, b]) => {
     const za = zones.find(z => z.id === a);
@@ -1825,8 +1736,12 @@ window.addEventListener('mousemove', e => {
   if (!drag) return;
   const z = zones.find(z => z.id == drag.id);
   if (z) {
-    z.x = drag.ox + (e.clientX - drag.sx);
-    z.y = drag.oy + (e.clientY - drag.sy);
+    const svg = document.getElementById('map-svg');
+    const W = svg.clientWidth || 500;
+    const H = svg.clientHeight || 400;
+    const pad = 24;
+    z.x = Math.max(pad, Math.min(W - pad, drag.ox + (e.clientX - drag.sx)));
+    z.y = Math.max(pad, Math.min(H - pad, drag.oy + (e.clientY - drag.sy)));
     posMap[z.id] = { x: z.x, y: z.y };
   }
   renderMap();
@@ -1940,621 +1855,8 @@ function esc(str) {
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-
-
-// ── LOGIN UNIFICADO (funciona abrindo arquivo local ou via Flask) ─────────────
-const FG_TEST_USER = 'operador';
-const FG_TEST_PASS = 'fence123';
-
-function showLogin() {
-  const overlay = document.getElementById('login-overlay');
-  if (overlay) overlay.classList.remove('hidden');
-  document.body.classList.remove('fg-authenticated');
-}
-function hideLogin() {
-  const overlay = document.getElementById('login-overlay');
-  if (overlay) overlay.classList.add('hidden');
-}
-function isFileMode() { return window.location.protocol === 'file:'; }
-
-function loadDemoData() {
-  // Quando o HTML é aberto direto pelo navegador (file:///), não existe Flask/API.
-  // Então carregamos dados locais para o painel abrir e funcionar em modo demonstração.
-  if (zones.length > 0) return;
-  zones = [
-    {id:'setor_1', name:'Setor 1', status:'on',       defeito:false, ligado:true,  voltage:6, tensaoV:6500, battery:94, temp:'24°C', health:'Bom',       fault:null, base:true, x:120, y:72},
-    {id:'setor_2', name:'Setor 2', status:'on',       defeito:false, ligado:true,  voltage:7, tensaoV:7200, battery:91, temp:'25°C', health:'Bom',       fault:null, base:true, x:470, y:92},
-    {id:'setor_3', name:'Setor 3', status:'critical', defeito:false, ligado:true,  voltage:3, tensaoV:3900, battery:87, temp:'26°C', health:'Atenção',   fault:null, base:true, x:440, y:335},
-    {id:'setor_4', name:'Setor 4', status:'off',      defeito:false, ligado:false, voltage:0, tensaoV:0,    battery:89, temp:'23°C', health:'Desligado', fault:null, base:true, x:115, y:335}
-  ];
-  posMap = {
-    setor_1:{x:120,y:72}, setor_2:{x:470,y:92}, setor_3:{x:440,y:335}, setor_4:{x:115,y:335}
-  };
-  edges = DEFAULT_EDGES.slice();
-  renderAll();
-}
-
-function setupUnifiedLogin() {
-  const overlay = document.getElementById('login-overlay');
-  const form = document.getElementById('login-form');
-  const msg = document.getElementById('msg');
-  const btn = document.getElementById('btn-login');
-
-  if (!overlay || !form) return;
-
-  // Sempre mostra login ao abrir localmente. Depois de autenticar, esconde.
-  if (window.location.protocol === 'file:') {
-    overlay.classList.remove('hidden');
-  }
-
-  if (form.dataset.fgLoginBound === '1') return;
-  form.dataset.fgLoginBound = '1';
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (msg) msg.textContent = '';
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Entrando...';
-    }
-
-    try {
-      const usuario = document.getElementById('usuario').value.trim();
-      const senha = document.getElementById('senha').value;
-
-      if (window.location.protocol === 'file:') {
-        if (usuario !== 'operador' || senha !== 'fence123') {
-          throw new Error('Usuário ou senha inválidos');
-        }
-        localSetLogged(true);
-        overlay.classList.add('hidden');
-        document.body.classList.add('fg-authenticated');
-        if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
-        return;
-      }
-
-      const res = await apiPost('/login', { usuario, senha });
-      if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
-      overlay.classList.add('hidden');
-      document.body.classList.add('fg-authenticated');
-      if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
-    } catch (err) {
-      if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Entrar no sistema';
-      }
-    }
-  });
-}
-
-// ── HOTFIX FINAL: botões e status crítico em modo arquivo local ───────────────
-function localLoginOK() {
-  return localStorage.getItem('fg_logged') === '1' || localStorage.getItem('fg_auth_ok') === '1';
-}
-function localSetLogged(value) {
-  if (value) {
-    localStorage.setItem('fg_logged', '1');
-    localStorage.setItem('fg_auth_ok', '1');
-  } else {
-    localStorage.removeItem('fg_logged');
-    localStorage.removeItem('fg_auth_ok');
-  }
-}
-function normalizeZoneStatus(z) {
-  if (!z) return;
-  z.voltage = Number(z.voltage || 0);
-  z.tensaoV = Math.round(z.voltage * 1000);
-  if (z.defeito || z.status === 'fault') {
-    z.status = 'fault';
-    z.ligado = false;
-    z.voltage = 0;
-    z.tensaoV = 0;
-    return;
-  }
-  if (!z.ligado || z.voltage <= 0) {
-    z.status = 'off';
-    z.ligado = false;
-    z.voltage = 0;
-    z.tensaoV = 0;
-    return;
-  }
-  z.status = z.voltage < 4 ? 'critical' : 'on';
-}
-function refreshAfterLocalAction(id) {
-  const z = zones.find(x => String(x.id) === String(id));
-  normalizeZoneStatus(z);
-  selectedZone = z ? z.id : selectedZone;
-  if (typeof selectZone === 'function' && z) selectZone(z.id);
-  if (typeof renderAll === 'function') renderAll();
-}
-async function apiFetch(url) {
-  if (window.location.protocol === 'file:') {
-    if (!localLoginOK()) throw new Error('Sessão expirada');
-    if (url === '/api/sensores') {
-      if (typeof loadDemoData === 'function') loadDemoData();
-      return {
-        setores: zones.map(z => {
-          normalizeZoneStatus(z);
-          return {
-            id: z.id,
-            nome: z.name,
-            ligado: !!z.ligado,
-            defeito: !!z.defeito,
-            tensao: Math.round((z.voltage || 0) * 1000),
-            tensao_alvo: Math.round((z.voltage || 0) * 1000),
-            status: z.defeito ? 'falha' : (!z.ligado ? 'desligado' : ((z.voltage || 0) < 4 ? 'critico' : 'normal')),
-            base: !!z.base,
-            ts: Date.now() / 1000
-          };
-        }),
-        alertas: zones.filter(z => z.defeito || (z.ligado && (z.voltage || 0) < 4)),
-        ts: Date.now() / 1000
-      };
-    }
-    if (url === '/api/estatisticas') {
-      const ativos = zones.filter(z => z.ligado && !z.defeito);
-      return {
-        ok: true,
-        total_setores: zones.length,
-        setores_falha: zones.filter(z => z.defeito).length,
-        tensao_media: ativos.length ? ativos.reduce((s,z)=>s+(z.voltage||0),0)/ativos.length*1000 : 0,
-        sensor_mode: 'local-demo'
-      };
-    }
-    return { ok: true };
-  }
-  const r = await fetch(url);
-  return parseApiResponse(r);
-}
-async function apiPost(url, data) {
-  if (window.location.protocol === 'file:') {
-    if (url === '/login') {
-      const usuario = String(data?.usuario || '').trim();
-      const senha = String(data?.senha || '');
-      if (usuario === 'operador' && senha === 'fence123') {
-        localSetLogged(true);
-        if (typeof loadDemoData === 'function') loadDemoData();
-        return { ok: true, usuario };
-      }
-      throw new Error('Usuário ou senha inválidos');
-    }
-    if (url === '/logout') {
-      localSetLogged(false);
-      return { ok: true };
-    }
-    if (!localLoginOK()) throw new Error('Sessão expirada');
-
-    if (url === '/api/controle') {
-      const z = zones.find(x => String(x.id) === String(data.id));
-      if (!z) return { ok: false, msg: 'Setor não encontrado' };
-
-      if (data.acao === 'ligar') {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = true;
-        z.voltage = Math.max(Number(z.voltage || 0), 6);
-      }
-      if (data.acao === 'desligar') {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = false;
-        z.voltage = 0;
-      }
-      if (data.acao === 'reiniciar') {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = true;
-        z.voltage = Math.max(Number(z.voltage || 0), 6);
-      }
-      if (data.acao === 'manutencao') {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = true;
-        z.voltage = Math.max(Number(z.voltage || 0), 6);
-      }
-      normalizeZoneStatus(z);
-      return { ok: true, setor: z };
-    }
-
-    if (url === '/api/tensao') {
-      const z = zones.find(x => String(x.id) === String(data.id));
-      if (!z) return { ok: false, msg: 'Setor não encontrado' };
-      const kv = Math.max(0, Math.min(8, Number(data.tensao || 0) / 1000));
-      z.defeito = false;
-      z.fault = null;
-      z.ligado = kv > 0;
-      z.voltage = kv;
-      normalizeZoneStatus(z);
-      return { ok: true, setor: z };
-    }
-
-    if (url === '/api/manutencao_todos') {
-      zones.forEach(z => {
-        z.defeito = false;
-        z.fault = null;
-        z.ligado = true;
-        z.voltage = Math.max(Number(z.voltage || 0), 6);
-        normalizeZoneStatus(z);
-      });
-      return { ok: true, setores: zones };
-    }
-
-    if (url === '/api/remover') return { ok: true };
-    if (url === '/api/editar') return { ok: true };
-    if (url === '/api/adicionar') {
-      const id = 'local_' + Date.now();
-      return { ok: true, setor: { id, nome: data?.nome || 'Nova zona', ligado:false, defeito:false, tensao:0, status:'desligado', base:false } };
-    }
-    return { ok: true };
-  }
-
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data || {})
-  });
-  return parseApiResponse(r);
-}
-async function zoneAction(acao) {
-  if (selectedZone === null || selectedZone === undefined) return;
-  const z = zones.find(x => String(x.id) === String(selectedZone));
-  if (!z) return;
-
-  if (window.location.protocol === 'file:') {
-    if (acao === 'ligar') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    }
-    if (acao === 'desligar') {
-      z.defeito = false; z.fault = null; z.ligado = false; z.voltage = 0;
-    }
-    if (acao === 'reiniciar') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    }
-    if (acao === 'manutencao') {
-      z.defeito = false; z.fault = null; z.ligado = true; z.voltage = Math.max(Number(z.voltage || 0), 6);
-    }
-    refreshAfterLocalAction(z.id);
-    return;
-  }
-
-  try {
-    const res = await apiPost('/api/controle', { id: z.id, acao });
-    if (res && res.ok) {
-      await syncFromBackend();
-      selectZone(z.id);
-    } else if (res && res.msg) {
-      alert(res.msg);
-    }
-  } catch (err) {
-    alert(err.message || 'Erro ao executar ação');
-  }
-}
-async function maintenanceAll() {
-  if (!confirm('Executar manutenção em todas as cercas/setores?')) return;
-  if (window.location.protocol === 'file:') {
-    zones.forEach(z => {
-      z.defeito = false;
-      z.fault = null;
-      z.ligado = true;
-      z.voltage = Math.max(Number(z.voltage || 0), 6);
-      normalizeZoneStatus(z);
-    });
-    renderAll();
-    return;
-  }
-  const res = await apiPost('/api/manutencao_todos', {});
-  if (!res.ok) alert(res.msg || 'Erro na manutenção');
-  await syncFromBackend();
-}
-function updateVolt(id, val) {
-  const z = zones.find(x => String(x.id) === String(id));
-  if (!z) return;
-  z.defeito = false;
-  z.fault = null;
-  z.voltage = Number(val);
-  z.ligado = z.voltage > 0;
-  normalizeZoneStatus(z);
-  refreshAfterLocalAction(z.id);
-
-  if (window.location.protocol !== 'file:' && typeof apiPost === 'function') {
-    clearTimeout(window.__fgVoltTimer);
-    window.__fgVoltTimer = setTimeout(() => {
-      apiPost('/api/tensao', { id: z.id, tensao: z.voltage * 1000 }).then(() => syncFromBackend()).catch(() => {});
-    }, 300);
-  }
-}
-function logout() {
-  if (window.location.protocol === 'file:') {
-    localSetLogged(false);
-    const overlay = document.getElementById('login-overlay');
-    if (overlay) overlay.classList.remove('hidden');
-    return;
-  }
-  apiPost('/logout', {}).finally(() => window.location.href = '/login');
-}
-
-
-
-// ── HOTFIX EDITOR: Add ponto / Remover linha / Remover ponto ─────────────────
-function setEditorMode(mode) {
-  addMode = mode === 'add';
-  connectMode = mode === 'connect';
-  removeLineMode = mode === 'removeLine';
-  connectStart = null;
-  connectPreview = null;
-
-  const svgEl = document.getElementById('map-svg');
-  const btnAdd = document.getElementById('tb-add');
-  const btnConnect = document.getElementById('tb-connect');
-  const btnRemoveLine = document.getElementById('tb-remove-line');
-
-  if (svgEl) {
-    svgEl.classList.toggle('add-mode', addMode);
-    svgEl.classList.toggle('connect-mode', connectMode);
-    svgEl.classList.toggle('remove-line-mode', removeLineMode);
-  }
-
-  if (btnAdd) {
-    btnAdd.classList.toggle('tb-active', addMode);
-    btnAdd.innerHTML = addMode
-      ? '<i class="ti ti-x" style="font-size:14px"></i> Cancelar add'
-      : '<i class="ti ti-map-pin-plus" style="font-size:14px"></i> Add ponto';
-  }
-
-  if (btnConnect) {
-    btnConnect.classList.toggle('tb-active', connectMode);
-    btnConnect.innerHTML = connectMode
-      ? '<i class="ti ti-x" style="font-size:14px"></i> Parar ligação'
-      : '<i class="ti ti-route" style="font-size:14px"></i> Ligar pontos';
-  }
-
-  if (btnRemoveLine) {
-    btnRemoveLine.classList.toggle('tb-active', removeLineMode);
-    btnRemoveLine.innerHTML = removeLineMode
-      ? '<i class="ti ti-x" style="font-size:14px"></i> Parar remoção'
-      : '<i class="ti ti-cut" style="font-size:14px"></i> Remover linha';
-  }
-
-  const hint = document.getElementById('tb-hint');
-  if (hint) {
-    hint.textContent =
-      addMode ? 'Clique no mapa para adicionar um ponto' :
-      connectMode ? 'Clique em dois pontos para criar uma linha' :
-      removeLineMode ? 'Clique em uma linha para remover' :
-      'Editor do mapa';
-  }
-
-  if (typeof renderMap === 'function') renderMap();
-}
-
-function toggleAddMode() {
-  setEditorMode(addMode ? null : 'add');
-}
-
-function toggleConnectMode() {
-  setEditorMode(connectMode ? null : 'connect');
-}
-
-function toggleRemoveLineMode() {
-  setEditorMode(removeLineMode ? null : 'removeLine');
-}
-
-function removeEdgeAt(index) {
-  index = Number(index);
-  if (!Number.isFinite(index) || index < 0 || index >= edges.length) return;
-  edges.splice(index, 1);
-  setEditorMode(null);
-  if (typeof renderAll === 'function') renderAll();
-}
-
-async function removeSelected() {
-  if (selectedZone === null || selectedZone === undefined) {
-    alert('Selecione uma zona para remover.');
-    return;
-  }
-
-  const z = zones.find(x => String(x.id) === String(selectedZone));
-  if (!z) {
-    alert('Zona não encontrada.');
-    return;
-  }
-
-  if (z.base) {
-    alert('Setores base não podem ser removidos.');
-    return;
-  }
-
-  if (!confirm('Remover ' + z.name + '?')) return;
-
-  if (window.location.protocol !== 'file:' && typeof z.id === 'string') {
-    const res = await apiPost('/api/remover', { id: z.id });
-    if (!res.ok) {
-      alert(res.msg || 'Erro ao remover setor.');
-      return;
-    }
-  }
-
-  edges = edges.filter(([a,b]) => String(a) !== String(z.id) && String(b) !== String(z.id));
-  zones = zones.filter(x => String(x.id) !== String(z.id));
-  selectedZone = null;
-
-  const nameEl = document.getElementById('zone-ctrl-name');
-  if (nameEl) {
-    nameEl.textContent = 'Selecione uma zona';
-    nameEl.style.color = 'var(--color-text-secondary)';
-  }
-
-  setEditorMode(null);
-  if (typeof updateToolbar === 'function') updateToolbar();
-  if (typeof renderAll === 'function') renderAll();
-}
-
-function installEditorClickHandlers() {
-  const svgEl = document.getElementById('map-svg');
-  if (!svgEl || svgEl.dataset.fgEditorFixed === '1') return;
-  svgEl.dataset.fgEditorFixed = '1';
-
-  svgEl.addEventListener('click', async function(e) {
-    if (!addMode) return;
-    if (e.target && (e.target.closest('.zone-node') || e.target.closest('.edge-hit'))) return;
-
-    const p = typeof getSVGPoint === 'function'
-      ? getSVGPoint(e)
-      : { x: e.offsetX || 200, y: e.offsetY || 200 };
-
-    const nome = 'Zona ' + (zones.length + 1);
-    let novaZona = null;
-
-    // Quando roda via Flask, cria a zona no backend para ela não sumir no próximo sync.
-    if (window.location.protocol !== 'file:') {
-      try {
-        const res = await apiPost('/api/adicionar', { nome });
-        if (res && res.ok && res.setor && res.setor.id) {
-          novaZona = res.setor;
-        } else {
-          alert((res && res.msg) || 'Não foi possível criar a zona no servidor.');
-          setEditorMode(null);
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-      } catch (err) {
-        alert(err.message || 'Erro ao criar zona no servidor.');
-        setEditorMode(null);
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-    } else {
-      novaZona = { id: 'local_' + Date.now(), nome, ligado: false, defeito: false, tensao: 0, status: 'desligado', base: false };
-    }
-
-    const newId = novaZona.id;
-    posMap[newId] = { x: p.x, y: p.y };
-
-    if (!zones.some(z => String(z.id) === String(newId))) {
-      zones.push({
-        id: newId,
-        name: novaZona.nome || nome,
-        status: backendStatusToUI ? backendStatusToUI(novaZona) : 'off',
-        defeito: !!novaZona.defeito,
-        ligado: !!novaZona.ligado,
-        voltage: tensaoToKv ? tensaoToKv(novaZona.tensao || 0) : 0,
-        tensaoV: Number(novaZona.tensao || 0),
-        battery: 100,
-        temp: '22°C',
-        health: 'Nova',
-        fault: null,
-        base: !!novaZona.base,
-        x: p.x,
-        y: p.y
-      });
-    }
-
-    autoConnectNewZone(newId, p);
-    selectedZone = newId;
-    setEditorMode(null);
-    if (window.location.protocol !== 'file:' && typeof syncFromBackend === 'function') await syncFromBackend();
-    if (typeof selectZone === 'function') selectZone(newId);
-    if (typeof renderAll === 'function') renderAll();
-    e.preventDefault();
-    e.stopPropagation();
-  }, true);
-}
-
-// Reinstala handlers depois de cada render do mapa, porque o SVG é redesenhado.
-(function wrapRenderMapForEditor(){
-  if (typeof renderMap === 'function' && !renderMap.__fgWrapped) {
-    const originalRenderMap = renderMap;
-    renderMap = function(...args) {
-      const result = originalRenderMap.apply(this, args);
-      setTimeout(installEditorClickHandlers, 0);
-      setTimeout(() => {
-        document.querySelectorAll('.edge-hit,[data-edge-idx]').forEach(el => {
-          if (el.dataset.fgRemoveBound === '1') return;
-          el.dataset.fgRemoveBound = '1';
-          el.addEventListener('click', function(ev) {
-            if (!removeLineMode) return;
-            const idx = this.dataset.edgeIdx ?? this.getAttribute('data-edge-idx');
-            removeEdgeAt(idx);
-            ev.preventDefault();
-            ev.stopPropagation();
-          }, true);
-        });
-      }, 0);
-      return result;
-    };
-    renderMap.__fgWrapped = true;
-  }
-  setTimeout(installEditorClickHandlers, 0);
-})();
-
-
-
-// OVERRIDE LOGIN FINAL
-
-function setupUnifiedLogin() {
-  const overlay = document.getElementById('login-overlay');
-  const form = document.getElementById('login-form');
-  const msg = document.getElementById('msg');
-  const btn = document.getElementById('btn-login');
-
-  if (!overlay || !form) return;
-
-  // Sempre mostra login ao abrir localmente. Depois de autenticar, esconde.
-  if (window.location.protocol === 'file:') {
-    overlay.classList.remove('hidden');
-  }
-
-  if (form.dataset.fgLoginBound === '1') return;
-  form.dataset.fgLoginBound = '1';
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (msg) msg.textContent = '';
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Entrando...';
-    }
-
-    try {
-      const usuario = document.getElementById('usuario').value.trim();
-      const senha = document.getElementById('senha').value;
-
-      if (window.location.protocol === 'file:') {
-        if (usuario !== 'operador' || senha !== 'fence123') {
-          throw new Error('Usuário ou senha inválidos');
-        }
-        localSetLogged(true);
-        overlay.classList.add('hidden');
-        document.body.classList.add('fg-authenticated');
-        if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
-        return;
-      }
-
-      const res = await apiPost('/login', { usuario, senha });
-      if (!res || !res.ok) throw new Error(res?.msg || 'Falha no login');
-      overlay.classList.add('hidden');
-      document.body.classList.add('fg-authenticated');
-      if (typeof syncFromBackend === 'function') setTimeout(syncFromBackend, 50);
-    } catch (err) {
-      if (msg) msg.textContent = err.message || 'Usuário ou senha inválidos';
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Entrar no sistema';
-      }
-    }
-  });
-}
-
-setupUnifiedLogin();
-
 syncFromBackend();
 setInterval(syncFromBackend, POLL_MS);
 </script>
-
 </body>
 </html>
