@@ -1,8 +1,26 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
 import random
 import time
+import math
+from threading import RLock
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-fence-guard-troque-em-producao")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+)
+
+# Conta teste funcional
+USUARIOS = {
+    "operador": {
+        "nome": "Operador Teste",
+        "perfil": "operador",
+        "senha_hash": generate_password_hash("fence123"),
+    }
+}
 
 # ─── Estado global do sistema ───────────────────────────────────────────────
 SETORES_BASE = {"setor_1", "setor_2", "setor_3", "setor_4"}
@@ -23,6 +41,24 @@ _proximo_id = 5   # contador para IDs extras
 SENSOR_MODE = "simulado"  # pronto para evoluir para sensores físicos reais
 historico_tensao = {sid: [] for sid in setores}
 eventos = []
+state_lock = RLock()
+
+
+def json_body() -> dict:
+    """Lê JSON de forma segura sem estourar erro 500 em payload inválido."""
+    body = request.get_json(silent=True)
+    return body if isinstance(body, dict) else {}
+
+
+def usuario_logado() -> bool:
+    return bool(session.get("logado") and session.get("usuario") in USUARIOS)
+
+
+@app.before_request
+def proteger_rotas_api():
+    """Bloqueia uso direto da API sem login ativo."""
+    if request.path.startswith("/api/") and not usuario_logado():
+        return jsonify({"ok": False, "msg": "Sessão expirada ou não autorizada"}), 401
 
 
 def registrar_evento(tipo: str, mensagem: str, setor_id: str | None = None):
@@ -81,6 +117,7 @@ def gerar_falha_programada():
     alvo["tensao_alvo"] = 0.0
     alvo["ts"] = agora
     ULTIMA_FALHA_TS = agora
+    registrar_evento("falha", f"Falha permanente gerada em {alvo['nome']}")
 
 
 def atualizar_tensoes():
@@ -129,7 +166,38 @@ def serializar_setor(sid: str, s: dict) -> dict:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if not usuario_logado():
+        return redirect(url_for("login"))
+    return render_template("index.html", usuario=session.get("usuario"))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        if usuario_logado():
+            return redirect(url_for("index"))
+        return render_template("login.html")
+
+    body = json_body()
+    usuario = str(body.get("usuario", "")).strip()
+    senha = str(body.get("senha", ""))
+    conta = USUARIOS.get(usuario)
+
+    if conta and check_password_hash(conta["senha_hash"], senha):
+        session.clear()
+        session["logado"] = True
+        session["usuario"] = usuario
+        session["nome"] = conta["nome"]
+        session["perfil"] = conta["perfil"]
+        return jsonify({"ok": True, "usuario": usuario, "nome": conta["nome"], "perfil": conta["perfil"]})
+
+    return jsonify({"ok": False, "msg": "Usuário ou senha inválidos"}), 401
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"ok": True})
 
 
 @app.route("/api/sensores")
@@ -142,7 +210,7 @@ def api_sensores():
 
 @app.route("/api/controle", methods=["POST"])
 def api_controle():
-    body = request.get_json(force=True)
+    body = json_body()
     sid = body.get("id")
     acao = body.get("acao")  # ligar | desligar | reiniciar | manutencao
 
@@ -189,8 +257,8 @@ def api_controle():
 @app.route("/api/adicionar", methods=["POST"])
 def api_adicionar():
     global _proximo_id
-    body = request.get_json(force=True)
-    nome = body.get("nome", "").strip()
+    body = json_body()
+    nome = body.get("nome", "").strip()[:60]
     if not nome:
         return jsonify({"ok": False, "msg": "Nome obrigatório"}), 400
 
@@ -211,7 +279,7 @@ def api_adicionar():
 
 @app.route("/api/remover", methods=["POST"])
 def api_remover():
-    body = request.get_json(force=True)
+    body = json_body()
     sid = body.get("id")
     if sid in SETORES_BASE:
         return jsonify({"ok": False, "msg": "Setores base não podem ser removidos"}), 403
@@ -226,9 +294,9 @@ def api_remover():
 
 @app.route("/api/editar", methods=["POST"])
 def api_editar():
-    body = request.get_json(force=True)
+    body = json_body()
     sid = body.get("id")
-    novo_nome = body.get("nome", "").strip()
+    novo_nome = body.get("nome", "").strip()[:60]
     if sid not in setores:
         return jsonify({"ok": False, "msg": "Setor não encontrado"}), 404
     if not novo_nome:
@@ -241,7 +309,7 @@ def api_editar():
 
 @app.route("/api/tensao", methods=["POST"])
 def api_tensao():
-    body = request.get_json(force=True)
+    body = json_body()
     sid = body.get("id")
     try:
         tensao = float(body.get("tensao", 0))
@@ -258,6 +326,9 @@ def api_tensao():
         s["tensao"] = 0.0
         s["ts"] = time.time()
         return jsonify({"ok": True, "msg": "Setor em falha: use manutenção", "setor": serializar_setor(sid, s)})
+
+    if not math.isfinite(tensao):
+        return jsonify({"ok": False, "msg": "Tensão inválida"}), 400
 
     tensao = max(0.0, min(tensao, TENSAO_MAX))
     s["tensao_alvo"] = tensao
