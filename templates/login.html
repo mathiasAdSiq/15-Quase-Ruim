@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Fence Guard SCADA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050816;--card:#111827;--card2:#1f2937;--text:#f9fafb;--muted:#9ca3af;--border:#273244;--green:#1D9E75;--red:#E24B4A;--blue:#378ADD}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#1f2937 0,#0b1220 48%,#050816 100%);font-family:Inter,system-ui,sans-serif;color:var(--text);padding:20px}
+.login-card{width:100%;max-width:390px;background:linear-gradient(180deg,rgba(31,41,55,.98),rgba(17,24,39,.98));border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:28px}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:24px}.shield{width:48px;height:48px;border-radius:14px;border:1px solid #334155;display:grid;place-items:center;background:#0f172a;color:var(--green);font-size:26px}.brand h1{font-size:20px;line-height:1.1}.brand p{font-size:12px;color:var(--muted);margin-top:3px}
+label{display:block;font-size:12px;color:#cbd5e1;margin:14px 0 6px}input{width:100%;height:44px;border-radius:10px;border:1px solid #374151;background:#0b1220;color:var(--text);padding:0 12px;font-size:14px;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(55,138,221,.15)}
+button{width:100%;height:44px;border:0;border-radius:10px;background:var(--green);color:white;font-weight:700;font-size:14px;cursor:pointer;margin-top:18px}button:hover{filter:brightness(1.08)}button:disabled{opacity:.65;cursor:wait}.msg{min-height:18px;font-size:12px;color:var(--red);margin-top:12px}.test-box{margin-top:18px;border:1px dashed #4b5563;border-radius:12px;padding:12px;background:rgba(15,23,42,.65);font-size:12px;color:#cbd5e1;line-height:1.6}.test-box b{color:#fff}.footer{margin-top:18px;font-size:11px;color:#64748b;text-align:center}
+</style>
+</head>
+<body>
+  <main class="login-card">
+    <div class="logo">
+      <div class="shield">⚡</div>
+      <div class="brand">
+        <h1>Fence Guard SCADA</h1>
+        <p>Acesso seguro do operador</p>
+      </div>
+    </div>
+
+    <form id="login-form">
+      <label for="usuario">Usuário</label>
+      <input id="usuario" name="usuario" autocomplete="username" value="operador" required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" autocomplete="current-password" value="fence123" required>
+
+      <button id="btn-login" type="submit">Entrar no sistema</button>
+      <div class="msg" id="msg"></div>
+    </form>
+
+    <div class="test-box">
+      <div><b>Conta teste:</b> operador</div>
+      <div><b>Senha:</b> fence123</div>
+    </div>
+
+    <div class="footer">Sessão protegida por cookie HttpOnly · API bloqueada sem login</div>
+  </main>
+
+<script>
+const form = document.getElementById('login-form');
+const msg = document.getElementById('msg');
+const btn = document.getElementById('btn-login');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+  try {
+    const r = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usuario: document.getElementById('usuario').value.trim(),
+        senha: document.getElementById('senha').value
+      })
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data.ok) throw new Error(data.msg || 'Falha no login');
+    window.location.href = '/';
+  } catch (err) {
+    msg.textContent = err.message || 'Usuário ou senha inválidos';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entrar no sistema';
+  }
+});
+</script>
+</body>
+</html>
