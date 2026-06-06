@@ -17,7 +17,6 @@
 
 
 
-STACK TECNOLOGICA:
 
 #  Escopo do Projeto
 
